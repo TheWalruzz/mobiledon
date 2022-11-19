@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "sidebar": "Panel boczny",
+    "avatar": "Twój avatar",
+    "editProfile": "Edytuj profil",
+    "settings": "Ustawienia",
+    "logout": "Wyloguj"
+  },
+  "toot": {
+    "newToot": "Nowy toot",
+    "reply": "Odpowiedz",
+    "boost": "Podbij",
+    "favorite": "Dodaj do ulubionych",
+    "bookmark": "Dodaj do zakładek",
+    "share": "Udostępnij",
+    "more": "Więcej",
+    "boosted": "podbił/a"
+  },
+  "timeline": {
+    "pullToRefresh": "Przeciągnij, aby odświeżyć"
+  },
+  "common": {
+    "confirmTitle": "Czy na pewno?",
+    "yes": "Tak",
+    "no": "Nie",
+    "hide": "Ukryj",
+    "show": "Pokaż",
+    "cancel": "Anuluj",
+    "errors": {
+      "invalidUrl": "Nieprawidłowy URL"
+    },
+    "continue": "Kontynuuj"
+  },
+  "editToot": {
+    "confirmText": "Jeśli kontynuujesz, twój toot zniknie na zawsze.",
+    "submitLabel": "Trąbnij!"
+  },
+  "login": {
+    "instanceUrl": "URL instancji"
+  }
+}

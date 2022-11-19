@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "sidebar": "Sidebar",
+    "avatar": "Your avatar",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "toot": {
+    "newToot": "New Toot",
+    "reply": "Reply",
+    "boost": "Boost",
+    "favorite": "Add to favorites",
+    "bookmark": "Add to bookmarks",
+    "share": "Share",
+    "more": "More",
+    "boosted": "boosted"
+  },
+  "timeline": {
+    "pullToRefresh": "Pull down to refresh"
+  },
+  "common": {
+    "confirmTitle": "Are you sure?",
+    "yes": "Yes",
+    "no": "No",
+    "hide": "Hide",
+    "show": "Show",
+    "cancel": "Cancel",
+    "errors": {
+      "invalidUrl": "Invalid URL"
+    },
+    "continue": "Continue"
+  },
+  "editToot": {
+    "confirmText": "If you continue, your toot will be lost forever.",
+    "submitLabel": "Toot!"
+  },
+  "login": {
+    "instanceUrl": "Instance URL"
+  }
+}
