@@ -11,12 +11,13 @@ import {
 } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import { Toot } from "./toot/Toot";
+import RenderIfVisible from "react-render-if-visible";
 import { IconArrowBigDownLines, IconPencil } from "@tabler/icons";
+import { Toot } from "./toot/Toot";
+import { useTranslation } from "react-i18next";
 import { useAppContext } from "../contexts/AppContext";
 import { getApiClient } from "../utils/getApiClient";
 import { Config } from "../config";
-import { useTranslation } from "react-i18next";
 import { openEditTootModal } from "../views/EditTootModal";
 
 interface TimelineProps {
@@ -119,7 +120,13 @@ export const Timeline: FC<TimelineProps> = ({
           <Stack spacing={0}>
             {firstItem}
             {toots.map((toot) => (
-              <Toot key={toot.id} toot={toot} onUpdate={onTootUpdate} />
+              <RenderIfVisible
+                key={toot.id}
+                root={scrollAreaRef?.current}
+                visibleOffset={2000}
+              >
+                <Toot toot={toot} onUpdate={onTootUpdate} />
+              </RenderIfVisible>
             ))}
             {lastItem}
             {!loading && hasMore && (
