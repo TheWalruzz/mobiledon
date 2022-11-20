@@ -120,11 +120,7 @@ export const Timeline: FC<TimelineProps> = ({
           <Stack spacing={0}>
             {firstItem}
             {toots.map((toot) => (
-              <RenderIfVisible
-                key={toot.id}
-                root={scrollAreaRef?.current}
-                visibleOffset={2000}
-              >
+              <RenderIfVisible key={toot.id} root={scrollAreaRef?.current}>
                 <Toot toot={toot} onUpdate={onTootUpdate} />
               </RenderIfVisible>
             ))}

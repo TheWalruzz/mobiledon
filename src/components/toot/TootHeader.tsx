@@ -7,6 +7,8 @@ import {
   TypographyStylesProvider,
   Text,
   Indicator,
+  Group,
+  clsx,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
@@ -41,6 +43,9 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   underline: {
     ref: getRef("underline"),
   },
+  ellipsisFix: {
+    display: "block",
+  },
 }));
 
 export const TootHeader: FC<TootHeaderProps> = ({
@@ -49,9 +54,12 @@ export const TootHeader: FC<TootHeaderProps> = ({
   hideReblog = false,
 }) => {
   const { t, i18n } = useTranslation();
-
   const { classes } = useStyles();
-  const createdAt = useMemo(() => new Date(toot.created_at), [toot]);
+  const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
+  const createdAt = useMemo(
+    () => new Date(currentToot.created_at),
+    [currentToot],
+  );
 
   return (
     <div className={classes.header}>
@@ -75,14 +83,14 @@ export const TootHeader: FC<TootHeaderProps> = ({
           </Text>
         )}
         <Link
-          to={`/user/@${toot.reblog?.account?.acct ?? toot.account.acct}`}
-          title={toot.reblog?.account?.acct ?? toot.account.acct}
+          to={`/user/@${currentToot.account.acct}`}
+          title={currentToot.account.acct}
         >
-          <Flex gap="xs" direction="row" align="center" mb="sm">
+          <Flex gap="xs" direction="row" align="center" wrap="nowrap" mb="sm">
             <Indicator
               size={16}
               position="bottom-center"
-              disabled={!(toot.reblog?.account?.bot ?? toot.account.bot)}
+              disabled={!currentToot.account.bot}
               label="BOT"
               color="gray"
               withBorder
@@ -90,27 +98,33 @@ export const TootHeader: FC<TootHeaderProps> = ({
             >
               <Avatar
                 h="100%"
-                src={toot.reblog?.account?.avatar ?? toot.account.avatar}
-                alt={toot.reblog?.account?.username ?? toot.account.username}
+                src={currentToot.account.avatar}
+                alt={currentToot.account.username}
                 mb={0}
               />
             </Indicator>
 
-            <Stack spacing={0} style={{ flexGrow: 1 }}>
-              <Text fw={600} className={classes.underline}>
-                <InnerHTML>
-                  {toot.reblog
-                    ? getDisplayName(toot.reblog.account)
-                    : getDisplayName(toot.account)}
-                </InnerHTML>
+            {/* TODO: add ellipsis for longer names */}
+            <Stack spacing={0} style={{ flexGrow: 1, minWidth: 0 }}>
+              <Text
+                fw={600}
+                className={clsx(classes.underline, classes.ellipsisFix)}
+                lineClamp={1}
+              >
+                <InnerHTML>{getDisplayName(currentToot.account)}</InnerHTML>
               </Text>
-              <Text c="dimmed" opacity={0.8}>
-                @{toot.reblog?.account?.acct ?? toot.account.acct}
+              <Text
+                c="dimmed"
+                opacity={0.8}
+                lineClamp={1}
+                className={classes.ellipsisFix}
+              >
+                @{currentToot.account.acct}
               </Text>
             </Stack>
             {!hideDate && (
-              <>
-                <Text c="dimmed" opacity={0.8} style={{ display: "flex" }}>
+              <Group spacing="xs" style={{ flexShrink: 0 }}>
+                <Text c="dimmed" opacity={0.8}>
                   <VisibilityIcon
                     visibility={toot.visibility}
                     size={visibilityIconSize}
@@ -123,7 +137,7 @@ export const TootHeader: FC<TootHeaderProps> = ({
                     timeStyle="twitter"
                   />
                 </Text>
-              </>
+              </Group>
             )}
           </Flex>
         </Link>

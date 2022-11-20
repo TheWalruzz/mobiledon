@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import {
   ContextModalProps,
   openConfirmModal,
@@ -21,13 +14,15 @@ import {
   Spoiler,
   Text,
 } from "@mantine/core";
-import RichTextEditor, { Editor } from "@mantine/rte";
+import { useTranslation } from "react-i18next";
+import { useEditor } from "@tiptap/react";
+import { StarterKit } from "@tiptap/starter-kit";
+import Mention from "@tiptap/extension-mention";
+import { RichTextEditor } from "@mantine/tiptap";
 import { TootHeader } from "../components/toot/TootHeader";
 import { TootContent } from "../components/toot/TootContent";
-import { getApiClient } from "../utils/getApiClient";
-import { prepareStatusForPost } from "../utils/prepareTextContent";
 import { Visibility, VisibilityIcon } from "../components/VisibilityIcon";
-import { useTranslation } from "react-i18next";
+import { suggestion } from "../components/editor/Suggestion";
 
 interface EditTootModalProps extends Record<string, unknown> {
   toot?: Entity.Status;
@@ -49,12 +44,28 @@ export const EditTootModal: FC<ContextModalProps<EditTootModalProps>> = ({
   },
 }) => {
   const { t } = useTranslation();
-  const editorRef = useRef<Editor>();
-  const [text, setText] = useState(initialValue);
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Mention.configure({
+        HTMLAttributes: {
+          class: "mention",
+        },
+        suggestion: suggestion("@", "accounts", (item) => item.acct),
+      }),
+      Mention.extend({ name: "hashtag" }).configure({
+        HTMLAttributes: {
+          class: "hashtag",
+        },
+        suggestion: suggestion("#", "hashtags", (item) => item.name),
+      }),
+    ],
+    content: initialValue || "",
+  });
 
   const onClose = useCallback(() => {
-    if (text) {
+    if (editor?.getText()) {
       openConfirmModal({
         title: (
           <Text fw={700}>{t("common.confirmTitle", "Are you sure?")}</Text>
@@ -80,59 +91,16 @@ export const EditTootModal: FC<ContextModalProps<EditTootModalProps>> = ({
     }
 
     context.closeModal(id);
-  }, [context, id, t, text]);
+  }, [context, id, t, editor]);
 
   const handleSubmit = useCallback(() => {
-    onSubmit(prepareStatusForPost(text), { visibility });
+    onSubmit(editor?.getText() ?? "", { visibility });
     context.closeModal(id);
-  }, [context, id, onSubmit, text, visibility]);
-
-  // TODO: fix mentions' output
-  const mentions = useMemo(
-    () => ({
-      // TODO: add avatars to the list
-      // TODO: fix z-index on the list (it clashes with the buttons, somehow)
-      allowedChars: /^[\p{L}\p{N}_]*$/u,
-      mentionDenotationChars: ["@", "#"],
-      defaultMenuOrientation: "top",
-      dataAttributes: [],
-      source: async (
-        searchTerm: string,
-        renderList: (items: any[]) => void,
-        mentionChar: string,
-      ) => {
-        if (!searchTerm) {
-          return;
-        }
-
-        const searchType = mentionChar === "@" ? "accounts" : "hashtags";
-
-        const apiClient = await getApiClient();
-        const results = await apiClient.search(searchTerm, searchType, {
-          limit: 5,
-        });
-        renderList(
-          results.data[searchType].map((item: any) => ({
-            id: item.id ?? item.name,
-            value: item.acct ?? item.name,
-          })),
-        );
-      },
-    }),
-    [],
-  );
-
-  const modules = useMemo(
-    () => ({
-      toolbar: false,
-      syntax: false,
-    }),
-    [],
-  );
+  }, [context, id, onSubmit, editor, visibility]);
 
   useEffect(() => {
-    editorRef.current?.focus();
-  }, []);
+    editor?.commands.focus();
+  }, [editor]);
 
   return (
     <>
@@ -148,19 +116,12 @@ export const EditTootModal: FC<ContextModalProps<EditTootModalProps>> = ({
           </Spoiler>
         </Paper>
       )}
-      <RichTextEditor
-        ref={editorRef as any}
-        value={text}
-        onChange={setText}
-        controls={[]}
-        formats={["mention"]}
-        mb="sm"
-        mentions={mentions}
-        modules={modules}
-        sticky={false}
-        styles={{ toolbar: { display: "none" } }}
-        h={200}
-      />
+      <RichTextEditor editor={editor} mb="xs" h={300}>
+        {/* <RichTextEditor.Toolbar>
+          <RichTextEditor.ControlsGroup></RichTextEditor.ControlsGroup>
+        </RichTextEditor.Toolbar> */}
+        <RichTextEditor.Content />
+      </RichTextEditor>
       <Group mb="xs">
         <Menu>
           <Menu.Target>

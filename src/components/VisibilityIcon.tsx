@@ -21,5 +21,5 @@ export const VisibilityIcon: FC<VisibilityIconProps> = ({
 }) => {
   const Icon = useMemo(() => visibilityIcons[visibility], [visibility]);
 
-  return <Icon size={size} />;
+  return <Icon style={{ display: "block" }} size={size} />;
 };

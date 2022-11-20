@@ -1,5 +1,3 @@
-import { sanitize } from "dompurify";
-
 interface TextOptions {
   emojis: Entity.Emoji[];
   mentions: Entity.Mention[];
@@ -34,13 +32,4 @@ export const prepareTextForRender = (
   });
 
   return newText;
-};
-
-export const prepareStatusForPost = (text: string) => {
-  const result = sanitize(text.replaceAll("</p>", "</p>\n"), {
-    KEEP_CONTENT: true,
-    ALLOWED_TAGS: [],
-  });
-
-  return result;
 };

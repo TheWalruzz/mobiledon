@@ -1,5 +1,21 @@
 {
+  "common": {
+    "noResults": "No results",
+    "show": "Pokaż",
+    "hide": "Ukryj",
+    "confirmTitle": "Czy na pewno?",
+    "yes": "Tak",
+    "no": "Nie",
+    "cancel": "Anuluj",
+    "errors": {
+      "invalidUrl": "Nieprawidłowy URL"
+    },
+    "continue": "Kontynuuj"
+  },
   "nav": {
+    "homeTimeline": "Home Timeline",
+    "localTimeline": "Local Timeline",
+    "globalTimeline": "Global Timeline",
     "sidebar": "Panel boczny",
     "avatar": "Twój avatar",
     "editProfile": "Edytuj profil",
@@ -18,18 +34,6 @@
   },
   "timeline": {
     "pullToRefresh": "Przeciągnij, aby odświeżyć"
-  },
-  "common": {
-    "confirmTitle": "Czy na pewno?",
-    "yes": "Tak",
-    "no": "Nie",
-    "hide": "Ukryj",
-    "show": "Pokaż",
-    "cancel": "Anuluj",
-    "errors": {
-      "invalidUrl": "Nieprawidłowy URL"
-    },
-    "continue": "Kontynuuj"
   },
   "editToot": {
     "confirmText": "Jeśli kontynuujesz, twój toot zniknie na zawsze.",
