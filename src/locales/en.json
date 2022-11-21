@@ -13,9 +13,9 @@
     "continue": "Continue"
   },
   "nav": {
-    "homeTimeline": "Home Timeline",
-    "localTimeline": "Local Timeline",
-    "globalTimeline": "Global Timeline",
+    "homeTimeline": "Your timeline",
+    "localTimeline": "Local timeline",
+    "globalTimeline": "Global timeline",
     "sidebar": "Sidebar",
     "avatar": "Your avatar",
     "editProfile": "Edit Profile",
@@ -37,7 +37,15 @@
   },
   "editToot": {
     "confirmText": "If you continue, your toot will be lost forever.",
+    "uploadFile": "Upload files",
+    "removeFile": "Remove",
     "submitLabel": "Toot!"
+  },
+  "visibility": {
+    "public": "Public",
+    "unlisted": "Unlisted",
+    "private": "Private",
+    "direct": "Direct"
   },
   "login": {
     "instanceUrl": "Instance URL"

@@ -6,7 +6,7 @@
     "@capacitor/android": "^4.4.0",
     "@capacitor/core": "^4.4.0",
     "@capacitor/device": "^4.1.0",
-    "@capacitor/preferences": "^4.0.1",
+    "@capacitor/preferences": "^4.0.2",
     "@emotion/react": "^11.10.5",
     "@mantine/core": "^5.8.2",
     "@mantine/dates": "^5.8.2",

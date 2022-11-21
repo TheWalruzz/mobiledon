@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { useAppContext } from "../contexts/AppContext";
 import { getApiClient } from "../utils/getApiClient";
 import { Config } from "../config";
-import { openEditTootModal } from "../views/EditTootModal";
+import { EditTootModal } from "../views/EditTootModal";
 
 interface TimelineProps {
   fetchData: (lastFetchedId?: string) => Promise<Entity.Status[]>;
@@ -37,6 +37,7 @@ export const Timeline: FC<TimelineProps> = ({
   const [toots, setToots] = useState<Entity.Status[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [editTootOpened, setEditTootOpened] = useState(false);
   const { ref: sentryRef, entry } = useIntersection({
     root: scrollAreaRef.current,
     threshold: 0,
@@ -76,15 +77,14 @@ export const Timeline: FC<TimelineProps> = ({
     [toots],
   );
 
-  const openEditModal = useCallback(() => {
-    openEditTootModal(t("toot.newToot", "New Toot"), {
-      onSubmit: async (text: string) => {
-        const apiClient = await getApiClient();
-        await apiClient.postStatus(text);
-        onRefresh();
-      },
-    });
-  }, [onRefresh, t]);
+  const onSubmit = useCallback(
+    async (text: string, options?: Record<string, any>) => {
+      const apiClient = await getApiClient();
+      await apiClient.postStatus(text, options);
+      onRefresh();
+    },
+    [onRefresh],
+  );
 
   useEffect(() => {
     if (entry?.isIntersecting && hasMore) {
@@ -142,12 +142,18 @@ export const Timeline: FC<TimelineProps> = ({
           color="blue"
           size={64}
           radius={64}
-          onClick={openEditModal}
+          onClick={() => setEditTootOpened(true)}
           sx={(theme) => ({ boxShadow: theme.shadows.sm })}
         >
           <IconPencil size={36} />
         </ActionIcon>
       </Affix>
+      <EditTootModal
+        opened={editTootOpened}
+        onClose={() => setEditTootOpened(false)}
+        title={t("toot.newToot", "New Toot")}
+        onSubmit={onSubmit}
+      />
     </>
   );
 };

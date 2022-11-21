@@ -68,7 +68,7 @@ export const MentionList: FC<MentionListProps> = forwardRef((props, ref) => {
             <Button
               variant="subtle"
               compact
-              // className={`item ${index === selectedIndex ? "is-selected" : ""}`}
+              color={index === selectedIndex ? "red" : undefined}
               key={index}
               onClick={() => selectItem(index)}
             >

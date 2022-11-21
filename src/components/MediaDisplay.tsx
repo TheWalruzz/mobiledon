@@ -26,11 +26,14 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
   }, [attachment, onClick]);
 
   useEffect(() => {
+    let focusedImage: FocusedImage;
     if (imageRef.current !== null) {
-      new FocusedImage(imageRef.current, {
+      focusedImage = new FocusedImage(imageRef.current, {
         focus: (attachment.meta as any)?.focus,
       });
     }
+
+    return () => focusedImage?.stopListening();
   }, [attachment.meta, showBlur]);
 
   const mediaElement = useMemo(() => {

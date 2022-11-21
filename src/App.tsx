@@ -9,7 +9,6 @@ import { Router } from "./Router";
 import { BrowserRouter } from "react-router-dom";
 import { AppContextProvider } from "./contexts/AppContext";
 import { ModalsProvider } from "@mantine/modals";
-import { EditTootModal } from "./views/EditTootModal";
 
 export const App = () => {
   // TODO: extract this to context dependent on user's preferences
@@ -38,7 +37,7 @@ export const App = () => {
       >
         <AppContextProvider>
           <BrowserRouter>
-            <ModalsProvider modals={{ editToot: EditTootModal }}>
+            <ModalsProvider>
               <Router />
             </ModalsProvider>
           </BrowserRouter>

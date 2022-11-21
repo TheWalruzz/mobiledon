@@ -1,6 +1,6 @@
 {
   "common": {
-    "noResults": "No results",
+    "noResults": "Brak wyników",
     "show": "Pokaż",
     "hide": "Ukryj",
     "confirmTitle": "Czy na pewno?",
@@ -13,9 +13,9 @@
     "continue": "Kontynuuj"
   },
   "nav": {
-    "homeTimeline": "Home Timeline",
-    "localTimeline": "Local Timeline",
-    "globalTimeline": "Global Timeline",
+    "homeTimeline": "Twoja oś czasu",
+    "localTimeline": "Lokalna oś czasu",
+    "globalTimeline": "Globalna oś czasu",
     "sidebar": "Panel boczny",
     "avatar": "Twój avatar",
     "editProfile": "Edytuj profil",
@@ -37,7 +37,15 @@
   },
   "editToot": {
     "confirmText": "Jeśli kontynuujesz, twój toot zniknie na zawsze.",
+    "uploadFile": "Upload files",
+    "removeFile": "Remove",
     "submitLabel": "Trąbnij!"
+  },
+  "visibility": {
+    "public": "Public",
+    "unlisted": "Unlisted",
+    "private": "Private",
+    "direct": "Direct"
   },
   "login": {
     "instanceUrl": "URL instancji"
