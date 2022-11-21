@@ -9,14 +9,16 @@ import {
   Modal,
   Paper,
   Spoiler,
+  Switch,
   Text,
+  TextInput,
 } from "@mantine/core";
 import { RichTextEditor } from "@mantine/tiptap";
 import { useTranslation } from "react-i18next";
 import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import Mention from "@tiptap/extension-mention";
-import { IconPaperclip } from "@tabler/icons";
+import { IconAlertTriangle, IconPaperclip } from "@tabler/icons";
 import { TootHeader } from "../components/toot/TootHeader";
 import { TootContent } from "../components/toot/TootContent";
 import { Visibility, VisibilityIcon } from "../components/VisibilityIcon";
@@ -25,6 +27,8 @@ import { MediaUploadGrid } from "../components/MediaUploadGrid";
 import { useFileUpload } from "../hooks/useFileUpload";
 import { ImageDetailsModal } from "./ImageDetailsModal";
 import { getApiClient } from "../utils/getApiClient";
+import { useInputState } from "@mantine/hooks";
+import { LanguageMenu } from "../components/LanguageMenu";
 
 interface EditTootModalProps extends Record<string, unknown> {
   toot?: Entity.Status;
@@ -38,6 +42,7 @@ interface EditTootModalProps extends Record<string, unknown> {
 
 const iconSize = 18;
 
+// TODO: fix setting initial value
 export const EditTootModal: FC<EditTootModalProps> = ({
   toot,
   initialValue = "",
@@ -47,12 +52,23 @@ export const EditTootModal: FC<EditTootModalProps> = ({
   opened,
   title,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
-  const { fileInputRef, files, onFileInputChange, removeFile, updateFile } =
-    useFileUpload();
+  const {
+    fileInputRef,
+    files,
+    onFileInputChange,
+    removeFile,
+    updateFile,
+    removeAllFiles,
+  } = useFileUpload();
   const [imageDetailsOpened, setImageDetailsOpened] = useState(false);
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
+  const [spoilerText, setSpoilerText] = useInputState<string | undefined>(
+    undefined,
+  );
+  const [language, setLanguage] = useState(i18n.language);
+  const [sensitive, setSensitive] = useState(false);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -120,11 +136,27 @@ export const EditTootModal: FC<EditTootModalProps> = ({
 
     onSubmit(editor?.getText() ?? "", {
       visibility,
-      media_ids: mediaIds.length > 0 ? [] : undefined,
+      media_ids: mediaIds.length > 0 ? mediaIds : undefined,
+      spoiler_text: spoilerText,
+      language,
+      sensitive: mediaIds.length > 0 ? sensitive : false,
       // TODO: add polls and other stuff
     });
+    // cleanup...
+    removeAllFiles();
+    // TODO: clean the rest of fields
     onClose();
-  }, [files, onSubmit, editor, visibility, onClose]);
+  }, [
+    files,
+    onSubmit,
+    editor,
+    visibility,
+    spoilerText,
+    language,
+    sensitive,
+    removeAllFiles,
+    onClose,
+  ]);
 
   const handleImageDetails = useCallback((index: number) => {
     setCurrentFileIndex(index);
@@ -155,7 +187,18 @@ export const EditTootModal: FC<EditTootModalProps> = ({
           </Spoiler>
         </Paper>
       )}
-      <RichTextEditor editor={editor} mb="xs" h={300}>
+      {spoilerText !== undefined && (
+        <TextInput
+          label={t(
+            "editToot.contentWarningLabel",
+            "Content warning description",
+          )}
+          value={spoilerText}
+          onChange={setSpoilerText}
+          mb="xs"
+        />
+      )}
+      <RichTextEditor editor={editor} mb="xs" h={200}>
         {/* <RichTextEditor.Toolbar>
           <RichTextEditor.ControlsGroup></RichTextEditor.ControlsGroup>
         </RichTextEditor.Toolbar> */}
@@ -211,12 +254,36 @@ export const EditTootModal: FC<EditTootModalProps> = ({
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
+
+        <ActionIcon
+          variant="filled"
+          color={spoilerText !== undefined ? "primary" : undefined}
+          onClick={() =>
+            setSpoilerText(spoilerText !== undefined ? undefined : "")
+          }
+        >
+          <IconAlertTriangle size={iconSize} />
+        </ActionIcon>
+
+        <LanguageMenu onChange={setLanguage}>
+          <ActionIcon variant="filled">
+            {language.toLocaleUpperCase()}
+          </ActionIcon>
+        </LanguageMenu>
       </Group>
       <MediaUploadGrid
         files={files}
         onRemove={removeFile}
         onClick={handleImageDetails}
       />
+      {files.length > 0 && (
+        <Switch
+          mb="xs"
+          checked={sensitive}
+          onChange={(event) => setSensitive(event.currentTarget.checked)}
+          label={t("editToot.sensitiveLabel", "Mark media as sensitive")}
+        />
+      )}
       <Flex justify="end">
         <Group>
           <Button variant="default" onClick={handleClose}>

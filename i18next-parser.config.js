@@ -3,4 +3,5 @@ module.exports = {
   locales: ["en", "pl"],
   output: "src/locales/$LOCALE.json",
   lineEnding: "lf",
+  createOldCatalogs: false,
 };

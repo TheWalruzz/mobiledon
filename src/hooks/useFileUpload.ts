@@ -41,6 +41,10 @@ export const useFileUpload = () => {
     [handlers],
   );
 
+  const removeAllFiles = useCallback(() => {
+    handlers.setState([]);
+  }, [handlers]);
+
   return useMemo(
     () => ({
       fileInputRef,
@@ -48,7 +52,8 @@ export const useFileUpload = () => {
       onFileInputChange,
       removeFile,
       updateFile,
+      removeAllFiles,
     }),
-    [files, onFileInputChange, removeFile, updateFile],
+    [files, onFileInputChange, removeAllFiles, removeFile, updateFile],
   );
 };
