@@ -2,11 +2,12 @@
   "common": {
     "noResults": "Brak wyników",
     "search": "Szukaj...",
-    "show": "Pokaż",
-    "hide": "Ukryj",
+    "submit": "Wyślij",
     "confirmTitle": "Czy na pewno?",
     "yes": "Tak",
     "no": "Nie",
+    "hide": "Ukryj",
+    "show": "Pokaż",
     "cancel": "Anuluj",
     "save": "Zapisz",
     "errors": {
@@ -31,8 +32,21 @@
     "sensitiveLabel": "Oznacz multimedia jako wrażliwe",
     "submitLabel": "Trąbnij!"
   },
-  "timeline": {
-    "pullToRefresh": "Przeciągnij, aby odświeżyć"
+  "poll": {
+    "totalVoters": "Suma głosów: {{votes}}",
+    "expirationTimes": {
+      "5Minutes": "5 minut",
+      "30Minutes": "30 minut",
+      "1Hour": "1 godzina",
+      "6Hours": "6 godzin",
+      "1Day": "1 dzień",
+      "3Days": "3 dni",
+      "7Days": "7 dni"
+    },
+    "option": "Opcja {{index}}",
+    "addOption": "Dodaj Opcję",
+    "expiresIn": "Wygasa za",
+    "allowMultiple": "Zezwól na wielokrotny wybór"
   },
   "toot": {
     "newToot": "Nowy toot",
@@ -43,6 +57,9 @@
     "share": "Udostępnij",
     "more": "Więcej",
     "boosted": "podbił/a"
+  },
+  "timeline": {
+    "pullToRefresh": "Przeciągnij, aby odświeżyć"
   },
   "visibility": {
     "public": "Publiczny",

@@ -9,6 +9,9 @@ import { Router } from "./Router";
 import { BrowserRouter } from "react-router-dom";
 import { AppContextProvider } from "./contexts/AppContext";
 import { ModalsProvider } from "@mantine/modals";
+import { CustomModalProvider } from "./contexts/CustomModalContext";
+import { EditTootModal } from "./components/modals/EditTootModal";
+import { ImageDetailsModal } from "./components/modals/ImageDetailsModal";
 
 export const App = () => {
   // TODO: extract this to context dependent on user's preferences
@@ -38,7 +41,14 @@ export const App = () => {
         <AppContextProvider>
           <BrowserRouter>
             <ModalsProvider>
-              <Router />
+              <CustomModalProvider
+                customModals={{
+                  editToot: EditTootModal,
+                  imageDetails: ImageDetailsModal,
+                }}
+              >
+                <Router />
+              </CustomModalProvider>
             </ModalsProvider>
           </BrowserRouter>
         </AppContextProvider>

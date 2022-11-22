@@ -2,11 +2,12 @@
   "common": {
     "noResults": "No results",
     "search": "Search...",
-    "show": "Show",
-    "hide": "Hide",
+    "submit": "Submit",
     "confirmTitle": "Are you sure?",
     "yes": "Yes",
     "no": "No",
+    "hide": "Hide",
+    "show": "Show",
     "cancel": "Cancel",
     "save": "Save",
     "errors": {
@@ -31,8 +32,21 @@
     "sensitiveLabel": "Mark media as sensitive",
     "submitLabel": "Toot!"
   },
-  "timeline": {
-    "pullToRefresh": "Pull down to refresh"
+  "poll": {
+    "totalVoters": "Total votes: {{votes}}",
+    "expirationTimes": {
+      "5Minutes": "5 Minutes",
+      "30Minutes": "30 Minutes",
+      "1Hour": "1 Hour",
+      "6Hours": "6 Hours",
+      "1Day": "1 Day",
+      "3Days": "3 Days",
+      "7Days": "7 Days"
+    },
+    "option": "Option {{index}}",
+    "addOption": "Add Option",
+    "expiresIn": "Expires in",
+    "allowMultiple": "Allow multiple answers"
   },
   "toot": {
     "newToot": "New Toot",
@@ -43,6 +57,9 @@
     "share": "Share",
     "more": "More",
     "boosted": "boosted"
+  },
+  "timeline": {
+    "pullToRefresh": "Pull down to refresh"
   },
   "visibility": {
     "public": "Public",

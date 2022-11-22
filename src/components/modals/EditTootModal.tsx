@@ -25,46 +25,43 @@ import { Visibility, VisibilityIcon } from "../utils/VisibilityIcon";
 import { suggestion } from "../editor/Suggestion";
 import { MediaUploadGrid } from "../layout/MediaUploadGrid";
 import { useFileUpload } from "../../hooks/useFileUpload";
-import { ImageDetailsModal } from "./ImageDetailsModal";
+import { ImageDetailsModalProps } from "./ImageDetailsModal";
 import { getApiClient } from "../../utils/getApiClient";
 import { useInputState, useListState } from "@mantine/hooks";
 import { LanguageMenu } from "../layout/LanguageMenu";
 import { PollInput } from "../layout/PollInput";
+import {
+  CustomModalProps,
+  useCustomModal,
+} from "../../contexts/CustomModalContext";
 
-interface EditTootModalProps extends Record<string, unknown> {
+export interface EditTootModalProps extends Record<string, unknown> {
   toot?: Entity.Status;
   initialValue?: string;
   initialVisibility?: Visibility;
   onSubmit: (text: string, options?: Record<string, any>) => void;
   onClose: () => void;
-  opened: boolean;
   title: string;
 }
 
 const iconSize = 18;
 
-// TODO: fix setting initial value
-export const EditTootModal: FC<EditTootModalProps> = ({
-  toot,
-  initialValue = "",
-  initialVisibility = "public",
-  onSubmit,
+export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
+  innerProps: {
+    toot,
+    initialValue = "",
+    initialVisibility = "public",
+    onSubmit,
+    title,
+  },
   onClose,
   opened,
-  title,
 }) => {
   const { t, i18n } = useTranslation();
+  const { openCustomModal } = useCustomModal();
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
-  const {
-    fileInputRef,
-    files,
-    onFileInputChange,
-    removeFile,
-    updateFile,
-    removeAllFiles,
-  } = useFileUpload();
-  const [imageDetailsOpened, setImageDetailsOpened] = useState(false);
-  const [currentFileIndex, setCurrentFileIndex] = useState(0);
+  const { fileInputRef, files, onFileInputChange, removeFile, updateFile } =
+    useFileUpload();
   const [spoilerText, setSpoilerText] = useInputState<string | undefined>(
     undefined,
   );
@@ -153,9 +150,6 @@ export const EditTootModal: FC<EditTootModalProps> = ({
           }
         : undefined,
     });
-    // cleanup...
-    removeAllFiles();
-    // TODO: clean the rest of fields
     onClose();
   }, [
     files,
@@ -169,14 +163,18 @@ export const EditTootModal: FC<EditTootModalProps> = ({
     pollOptions,
     pollExpiresIn,
     pollMultiple,
-    removeAllFiles,
     onClose,
   ]);
 
-  const handleImageDetails = useCallback((index: number) => {
-    setCurrentFileIndex(index);
-    setImageDetailsOpened(true);
-  }, []);
+  const handleImageDetails = useCallback(
+    (index: number) => {
+      openCustomModal<ImageDetailsModalProps>("imageDetails", {
+        fileDetails: files[index],
+        onSubmit: (details) => updateFile(index, details),
+      });
+    },
+    [files, openCustomModal, updateFile],
+  );
 
   useEffect(() => {
     editor?.commands.focus();
@@ -338,12 +336,6 @@ export const EditTootModal: FC<EditTootModalProps> = ({
           </Button>
         </Group>
       </Flex>
-      <ImageDetailsModal
-        fileDetails={files.length > 0 ? files[currentFileIndex] : null}
-        opened={imageDetailsOpened}
-        onClose={() => setImageDetailsOpened(false)}
-        onSubmit={(details) => updateFile(currentFileIndex, details)}
-      />
     </Modal>
   );
 };

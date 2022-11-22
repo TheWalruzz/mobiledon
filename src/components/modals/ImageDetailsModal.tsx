@@ -19,20 +19,16 @@ import { useTranslation } from "react-i18next";
 import { useInputState } from "@mantine/hooks";
 import { FileDetails } from "../../hooks/useFileUpload";
 import { FocusPicker } from "image-focus";
+import { CustomModalProps } from "../../contexts/CustomModalContext";
 
-interface ImageDetailsModalProps extends Record<string, unknown> {
+export interface ImageDetailsModalProps extends Record<string, unknown> {
   fileDetails: FileDetails | null;
   onSubmit: (fileDetails: FileDetails) => void;
-  opened: boolean;
-  onClose: () => void;
 }
 
-export const ImageDetailsModal: FC<ImageDetailsModalProps> = ({
-  fileDetails,
-  onSubmit,
-  opened,
-  onClose,
-}) => {
+export const ImageDetailsModal: FC<
+  CustomModalProps<ImageDetailsModalProps>
+> = ({ innerProps: { fileDetails, onSubmit }, opened, onClose }) => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const { t } = useTranslation();
   const [description, setDescription] = useInputState(

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import {
   ActionIcon,
   Button,
@@ -16,7 +16,8 @@ import {
 } from "@tabler/icons";
 import { getApiClient } from "../../utils/getApiClient";
 import { useTranslation } from "react-i18next";
-import { EditTootModal } from "../modals/EditTootModal";
+import { EditTootModalProps } from "../modals/EditTootModal";
+import { useCustomModal } from "../../contexts/CustomModalContext";
 
 interface TootFooterProps {
   toot: Entity.Status;
@@ -27,13 +28,9 @@ const actionIconSize = 20;
 
 export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
   const { t } = useTranslation();
+  const { openCustomModal } = useCustomModal();
   const theme = useMantineTheme();
-  const [editTootOpened, setEditTootOpened] = useState(false);
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
-
-  const reply = useCallback(() => {
-    setEditTootOpened(true);
-  }, []);
 
   const share = useCallback(
     () =>
@@ -84,6 +81,16 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
     },
     [currentToot.id],
   );
+
+  const reply = useCallback(() => {
+    openCustomModal<EditTootModalProps>("editToot", {
+      title: t("toot.reply", "Reply"),
+      toot: currentToot,
+      initialValue: `@${currentToot.account.acct}&nbsp;`,
+      initialVisibility: "unlisted",
+      onSubmit,
+    });
+  }, [currentToot, onSubmit, openCustomModal, t]);
 
   return (
     <>
@@ -165,15 +172,6 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
           </Menu.Dropdown>
         </Menu>
       </Group>
-      <EditTootModal
-        opened={editTootOpened}
-        onClose={() => setEditTootOpened(false)}
-        title={t("toot.reply", "Reply")}
-        toot={currentToot}
-        initialValue={`@${currentToot.account.acct}&nbsp;`}
-        initialVisibility={"unlisted"}
-        onSubmit={onSubmit}
-      />
     </>
   );
 };

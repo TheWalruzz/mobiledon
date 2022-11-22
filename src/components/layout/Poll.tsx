@@ -114,6 +114,8 @@ export const Poll: FC<PollProps> = ({
                 />
               ))}
             </PollComponent.Group>
+            {/* TODO: add "expires in" information */}
+            {/* <Text>{t("poll.expiresIn", "Expires in")}</Text> */}
             {!disableSubmit && (
               <Button disabled={answers.length === 0} onClick={handleSubmit}>
                 {t("common.submit", "Submit")}

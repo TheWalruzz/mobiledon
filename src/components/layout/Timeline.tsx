@@ -18,7 +18,8 @@ import { useTranslation } from "react-i18next";
 import { useAppContext } from "../../contexts/AppContext";
 import { getApiClient } from "../../utils/getApiClient";
 import { Config } from "../../config";
-import { EditTootModal } from "../modals/EditTootModal";
+import { EditTootModalProps } from "../modals/EditTootModal";
+import { useCustomModal } from "../../contexts/CustomModalContext";
 
 interface TimelineProps {
   fetchData: (lastFetchedId?: string) => Promise<Entity.Status[]>;
@@ -32,12 +33,12 @@ export const Timeline: FC<TimelineProps> = ({
   lastItem,
 }) => {
   const { t } = useTranslation();
+  const { openCustomModal } = useCustomModal();
   const { scrollAreaRef } = useAppContext();
   // TODO: save loaded toots in global state for back functionality
   const [toots, setToots] = useState<Entity.Status[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [editTootOpened, setEditTootOpened] = useState(false);
   const { ref: sentryRef, entry } = useIntersection({
     root: scrollAreaRef.current,
     threshold: 0,
@@ -85,6 +86,13 @@ export const Timeline: FC<TimelineProps> = ({
     },
     [onRefresh],
   );
+
+  const openEditTootModal = useCallback(() => {
+    openCustomModal<EditTootModalProps>("editToot", {
+      title: t("toot.newToot", "New Toot"),
+      onSubmit,
+    });
+  }, [onSubmit, openCustomModal, t]);
 
   useEffect(() => {
     if (entry?.isIntersecting && hasMore) {
@@ -146,18 +154,12 @@ export const Timeline: FC<TimelineProps> = ({
           color="blue"
           size={64}
           radius={64}
-          onClick={() => setEditTootOpened(true)}
+          onClick={openEditTootModal}
           sx={(theme) => ({ boxShadow: theme.shadows.sm })}
         >
           <IconPencil size={36} />
         </ActionIcon>
       </Affix>
-      <EditTootModal
-        opened={editTootOpened}
-        onClose={() => setEditTootOpened(false)}
-        title={t("toot.newToot", "New Toot")}
-        onSubmit={onSubmit}
-      />
     </>
   );
 };
