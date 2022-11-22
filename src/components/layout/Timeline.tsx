@@ -13,12 +13,12 @@ import { useIntersection } from "@mantine/hooks";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import RenderIfVisible from "react-render-if-visible";
 import { IconArrowBigDownLines, IconPencil } from "@tabler/icons";
-import { Toot } from "./toot/Toot";
+import { Toot } from "../toot/Toot";
 import { useTranslation } from "react-i18next";
-import { useAppContext } from "../contexts/AppContext";
-import { getApiClient } from "../utils/getApiClient";
-import { Config } from "../config";
-import { EditTootModal } from "../views/EditTootModal";
+import { useAppContext } from "../../contexts/AppContext";
+import { getApiClient } from "../../utils/getApiClient";
+import { Config } from "../../config";
+import { EditTootModal } from "../modals/EditTootModal";
 
 interface TimelineProps {
   fetchData: (lastFetchedId?: string) => Promise<Entity.Status[]>;

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from "react";
-import { getApiClient } from "../utils/getApiClient";
-import { Timeline } from "../components/Timeline";
-import { TimelineType, useAppContext } from "../contexts/AppContext";
-import { Config } from "../config";
+import { getApiClient } from "../../utils/getApiClient";
+import { Timeline } from "../layout/Timeline";
+import { TimelineType, useAppContext } from "../../contexts/AppContext";
+import { Config } from "../../config";
 
 export const LocalTimeline = () => {
   const { setCurrentTimeline } = useAppContext();

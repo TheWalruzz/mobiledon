@@ -1,11 +1,11 @@
 import { Space, Stack } from "@mantine/core";
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Timeline } from "../components/Timeline";
-import { Toot } from "../components/toot/Toot";
-import { Config } from "../config";
-import { TimelineType, useAppContext } from "../contexts/AppContext";
-import { getApiClient } from "../utils/getApiClient";
+import { Timeline } from "../layout/Timeline";
+import { Toot } from "../toot/Toot";
+import { Config } from "../../config";
+import { TimelineType, useAppContext } from "../../contexts/AppContext";
+import { getApiClient } from "../../utils/getApiClient";
 
 export const TootThread = () => {
   const { id } = useParams();

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Preferences } from "@capacitor/preferences";
-import { getApiClient } from "../utils/getApiClient";
+import { getApiClient } from "../../utils/getApiClient";
 import { Center, Loader, Paper } from "@mantine/core";
 
 export const AuthHandler = () => {

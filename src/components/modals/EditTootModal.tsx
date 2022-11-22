@@ -18,17 +18,18 @@ import { useTranslation } from "react-i18next";
 import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import Mention from "@tiptap/extension-mention";
-import { IconAlertTriangle, IconPaperclip } from "@tabler/icons";
-import { TootHeader } from "../components/toot/TootHeader";
-import { TootContent } from "../components/toot/TootContent";
-import { Visibility, VisibilityIcon } from "../components/VisibilityIcon";
-import { suggestion } from "../components/editor/Suggestion";
-import { MediaUploadGrid } from "../components/MediaUploadGrid";
-import { useFileUpload } from "../hooks/useFileUpload";
+import { IconAlertTriangle, IconList, IconPaperclip } from "@tabler/icons";
+import { TootHeader } from "../toot/TootHeader";
+import { TootContent } from "../toot/TootContent";
+import { Visibility, VisibilityIcon } from "../utils/VisibilityIcon";
+import { suggestion } from "../editor/Suggestion";
+import { MediaUploadGrid } from "../layout/MediaUploadGrid";
+import { useFileUpload } from "../../hooks/useFileUpload";
 import { ImageDetailsModal } from "./ImageDetailsModal";
-import { getApiClient } from "../utils/getApiClient";
-import { useInputState } from "@mantine/hooks";
-import { LanguageMenu } from "../components/LanguageMenu";
+import { getApiClient } from "../../utils/getApiClient";
+import { useInputState, useListState } from "@mantine/hooks";
+import { LanguageMenu } from "../layout/LanguageMenu";
+import { PollInput } from "../layout/PollInput";
 
 interface EditTootModalProps extends Record<string, unknown> {
   toot?: Entity.Status;
@@ -69,6 +70,10 @@ export const EditTootModal: FC<EditTootModalProps> = ({
   );
   const [language, setLanguage] = useState(i18n.language);
   const [sensitive, setSensitive] = useState(false);
+  const [hasPoll, setHasPoll] = useState(false);
+  const [pollOptions, pollHandlers] = useListState<string>(["", ""]);
+  const [pollMultiple, setPollMultiple] = useState(false);
+  const [pollExpiresIn, setPollExpiresIn] = useState(300);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -140,7 +145,13 @@ export const EditTootModal: FC<EditTootModalProps> = ({
       spoiler_text: spoilerText,
       language,
       sensitive: mediaIds.length > 0 ? sensitive : false,
-      // TODO: add polls and other stuff
+      poll: hasPoll
+        ? {
+            options: pollOptions,
+            expires_in: pollExpiresIn,
+            multiple: pollMultiple,
+          }
+        : undefined,
     });
     // cleanup...
     removeAllFiles();
@@ -154,6 +165,10 @@ export const EditTootModal: FC<EditTootModalProps> = ({
     spoilerText,
     language,
     sensitive,
+    hasPoll,
+    pollOptions,
+    pollExpiresIn,
+    pollMultiple,
     removeAllFiles,
     onClose,
   ]);
@@ -183,7 +198,12 @@ export const EditTootModal: FC<EditTootModalProps> = ({
             hideLabel={t("common.hide", "Hide")}
             showLabel={t("common.show", "Show")}
           >
-            <TootContent toot={toot.reblog || toot} onContentClick={() => {}} />
+            <TootContent
+              toot={toot.reblog || toot}
+              onContentClick={() => {}}
+              onUpdate={() => {}}
+              displayOnly
+            />
           </Spoiler>
         </Paper>
       )}
@@ -213,12 +233,14 @@ export const EditTootModal: FC<EditTootModalProps> = ({
         onChange={onFileInputChange}
       />
       <Group mb="xs">
-        <ActionIcon
-          variant="filled"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <IconPaperclip size={iconSize} />
-        </ActionIcon>
+        {!hasPoll && (
+          <ActionIcon
+            variant="filled"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <IconPaperclip size={iconSize} />
+          </ActionIcon>
+        )}
 
         <Menu>
           <Menu.Target>
@@ -270,6 +292,16 @@ export const EditTootModal: FC<EditTootModalProps> = ({
             {language.toLocaleUpperCase()}
           </ActionIcon>
         </LanguageMenu>
+
+        {files.length === 0 && (
+          <ActionIcon
+            variant="filled"
+            color={hasPoll ? "primary" : undefined}
+            onClick={() => setHasPoll((value) => !value)}
+          >
+            <IconList size={iconSize} />
+          </ActionIcon>
+        )}
       </Group>
       <MediaUploadGrid
         files={files}
@@ -282,6 +314,18 @@ export const EditTootModal: FC<EditTootModalProps> = ({
           checked={sensitive}
           onChange={(event) => setSensitive(event.currentTarget.checked)}
           label={t("editToot.sensitiveLabel", "Mark media as sensitive")}
+        />
+      )}
+      {hasPoll && (
+        <PollInput
+          values={pollOptions}
+          onChange={pollHandlers.setItem}
+          onAdd={() => pollHandlers.append("")}
+          onRemove={pollHandlers.remove}
+          multiple={pollMultiple}
+          setMultiple={setPollMultiple}
+          expiresIn={pollExpiresIn}
+          setExpiresIn={setPollExpiresIn}
         />
       )}
       <Flex justify="end">

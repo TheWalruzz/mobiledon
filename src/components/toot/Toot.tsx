@@ -34,6 +34,10 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
     navigate(`/toot/${currentToot.id}`);
   }, [navigate, currentToot]);
 
+  const handleUpdate = useCallback(() => {
+    onUpdate(toot.id);
+  }, [onUpdate, toot.id]);
+
   useEffect(() => {
     setLoaded(true);
   }, []);
@@ -56,8 +60,12 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
           id={currentToot.id}
         >
           <TootHeader toot={toot} />
-          <TootContent toot={currentToot} onContentClick={onContentClick} />
-          <TootFooter toot={toot} onUpdate={onUpdate} />
+          <TootContent
+            toot={currentToot}
+            onUpdate={handleUpdate}
+            onContentClick={onContentClick}
+          />
+          <TootFooter toot={toot} onUpdate={handleUpdate} />
         </Paper>
       )}
     </Transition>

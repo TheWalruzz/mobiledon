@@ -18,7 +18,7 @@ import { IconBrandMastodon } from "@tabler/icons";
 import validator from "validator";
 import normalizeUrl from "normalize-url";
 import { Preferences } from "@capacitor/preferences";
-import { getApiClient } from "../utils/getApiClient";
+import { getApiClient } from "../../utils/getApiClient";
 import { useTranslation } from "react-i18next";
 
 export const Login = () => {

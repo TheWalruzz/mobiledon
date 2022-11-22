@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useInputState } from "@mantine/hooks";
-import { FileDetails } from "../hooks/useFileUpload";
+import { FileDetails } from "../../hooks/useFileUpload";
 import { FocusPicker } from "image-focus";
 
 interface ImageDetailsModalProps extends Record<string, unknown> {

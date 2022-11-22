@@ -9,7 +9,7 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { FileDetails } from "../hooks/useFileUpload";
+import { FileDetails } from "../../hooks/useFileUpload";
 import { IconPencil } from "@tabler/icons";
 
 interface FileDisplayProps {

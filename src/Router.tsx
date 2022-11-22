@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { AuthHandler } from "./views/AuthHandler";
-import { HomeTimeline } from "./views/HomeTimeline";
+import { AuthHandler } from "./components/views/AuthHandler";
+import { HomeTimeline } from "./components/views/HomeTimeline";
 import { Layout } from "./components/layout/Layout";
-import { Login } from "./views/Login";
-import { LocalTimeline } from "./views/LocalTimeline";
-import { GlobalTimeline } from "./views/GlobalTimeline";
-import { TootThread } from "./views/TootThread";
+import { Login } from "./components/views/Login";
+import { LocalTimeline } from "./components/views/LocalTimeline";
+import { GlobalTimeline } from "./components/views/GlobalTimeline";
+import { TootThread } from "./components/views/TootThread";
 
 export const Router = () => {
   return (

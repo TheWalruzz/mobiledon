@@ -16,11 +16,11 @@ import {
 } from "@tabler/icons";
 import { getApiClient } from "../../utils/getApiClient";
 import { useTranslation } from "react-i18next";
-import { EditTootModal } from "../../views/EditTootModal";
+import { EditTootModal } from "../modals/EditTootModal";
 
 interface TootFooterProps {
   toot: Entity.Status;
-  onUpdate: (id: string) => void;
+  onUpdate: () => void;
 }
 
 const actionIconSize = 20;
@@ -51,8 +51,8 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
     } else {
       await apiClient.reblogStatus(currentToot.id);
     }
-    onUpdate(toot.id);
-  }, [currentToot.reblogged, currentToot.id, onUpdate, toot.id]);
+    onUpdate();
+  }, [currentToot.reblogged, currentToot.id, onUpdate]);
 
   const favorite = useCallback(async () => {
     const apiClient = await getApiClient();
@@ -61,8 +61,8 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
     } else {
       await apiClient.favouriteStatus(currentToot.id);
     }
-    onUpdate(toot.id);
-  }, [currentToot.favourited, currentToot.id, onUpdate, toot.id]);
+    onUpdate();
+  }, [currentToot.favourited, currentToot.id, onUpdate]);
 
   const bookmark = useCallback(async () => {
     const apiClient = await getApiClient();
@@ -71,8 +71,8 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
     } else {
       await apiClient.bookmarkStatus(currentToot.id);
     }
-    onUpdate(toot.id);
-  }, [currentToot.bookmarked, currentToot.id, onUpdate, toot.id]);
+    onUpdate();
+  }, [currentToot.bookmarked, currentToot.id, onUpdate]);
 
   const onSubmit = useCallback(
     async (text: string, options?: Record<string, any>) => {

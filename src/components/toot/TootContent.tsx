@@ -1,17 +1,35 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import { Spoiler, Text, TypographyStylesProvider } from "@mantine/core";
 import { prepareTextForRender } from "../../utils/prepareTextContent";
-import { InnerHTML } from "../InnerHTML";
-import { MediaGrid } from "../MediaGrid";
+import { InnerHTML } from "../utils/InnerHTML";
+import { MediaGrid } from "../layout/MediaGrid";
 import { useTranslation } from "react-i18next";
+import { Poll } from "../layout/Poll";
+import { getApiClient } from "../../utils/getApiClient";
 
 interface TootContentProps {
   toot: Entity.Status;
   onContentClick: () => void;
+  onUpdate: () => void;
+  displayOnly?: boolean;
 }
 
-export const TootContent: FC<TootContentProps> = ({ toot, onContentClick }) => {
+export const TootContent: FC<TootContentProps> = ({
+  toot,
+  onContentClick,
+  onUpdate,
+  displayOnly = false,
+}) => {
   const { t } = useTranslation();
+
+  const onPollSubmit = useCallback(
+    async (values: number[]) => {
+      const apiClient = await getApiClient();
+      await apiClient.votePoll(toot.poll?.id!, values);
+      onUpdate();
+    },
+    [onUpdate, toot.poll?.id],
+  );
 
   return (
     <>
@@ -24,7 +42,7 @@ export const TootContent: FC<TootContentProps> = ({ toot, onContentClick }) => {
           </Text>
         )}
         <Spoiler
-          maxHeight={toot.spoiler_text ? 0 : 300}
+          maxHeight={toot.spoiler_text ? 0 : 150}
           showLabel={t("common.show", "Show")}
           hideLabel={t("common.hide", "Hide")}
           mb="xs"
@@ -32,6 +50,13 @@ export const TootContent: FC<TootContentProps> = ({ toot, onContentClick }) => {
           <InnerHTML component="div" onClick={onContentClick}>
             {prepareTextForRender(toot.content, toot)}
           </InnerHTML>
+          {toot.poll && (
+            <Poll
+              poll={toot.poll}
+              onSubmit={onPollSubmit}
+              disableSubmit={displayOnly}
+            />
+          )}
         </Spoiler>
       </TypographyStylesProvider>
       {toot.media_attachments.length > 0 && (

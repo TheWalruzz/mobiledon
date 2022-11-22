@@ -14,8 +14,8 @@ import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
 import { IconExchange } from "@tabler/icons";
 import { getDisplayName } from "../../utils/getDisplayName";
-import { InnerHTML } from "../InnerHTML";
-import { VisibilityIcon } from "../VisibilityIcon";
+import { InnerHTML } from "../utils/InnerHTML";
+import { VisibilityIcon } from "../utils/VisibilityIcon";
 import { useTranslation } from "react-i18next";
 
 interface TootHeaderProps {

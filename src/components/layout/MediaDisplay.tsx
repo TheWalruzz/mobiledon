@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { FocusedImage } from "image-focus";
-import { blurHashToDataURL } from "../utils/blurhashToDataUrl";
-import { downloadFile } from "../utils/downloadFile";
+import { blurHashToDataURL } from "../../utils/blurhashToDataUrl";
+import { downloadFile } from "../../utils/downloadFile";
 
 interface MediaDisplayProps {
   attachment: Entity.Attachment;
