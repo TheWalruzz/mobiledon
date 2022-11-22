@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { FocusedImage } from "image-focus";
 import { blurHashToDataURL } from "../utils/blurhashToDataUrl";
+import { downloadFile } from "../utils/downloadFile";
 
 interface MediaDisplayProps {
   attachment: Entity.Attachment;
@@ -22,8 +23,12 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
   );
 
   const handleClick = useCallback(() => {
-    onClick(attachment);
-  }, [attachment, onClick]);
+    if (attachment.type === "unknown") {
+      downloadFile(attachment.remote_url || attachment.url);
+    } else if (!showBlur) {
+      onClick(attachment);
+    }
+  }, [attachment, onClick, showBlur]);
 
   useEffect(() => {
     let focusedImage: FocusedImage;
@@ -47,7 +52,6 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
               ref={imageRef}
               src={blurredImage}
               alt={attachment.description ?? ""}
-              loading="lazy"
             />
           );
         }
@@ -82,6 +86,7 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
         return (
           <img
             ref={imageRef}
+            loading="eager"
             src={
               showBlur || attachment.type === "unknown"
                 ? blurredImage

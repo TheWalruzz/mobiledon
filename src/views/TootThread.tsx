@@ -10,8 +10,7 @@ import { getApiClient } from "../utils/getApiClient";
 export const TootThread = () => {
   const { id } = useParams();
   const [root, setRoot] = useState<Entity.Status>();
-  // mastodon context returns ALL descendants, without limiting
-  const [loaded, setLoaded] = useState(false);
+
   const { setCurrentTimeline } = useAppContext();
 
   useEffect(() => {
@@ -20,19 +19,17 @@ export const TootThread = () => {
 
   const fetchData = useCallback(
     async (lastFetchedId?: string) => {
-      if (id && !loaded) {
+      if (id && !lastFetchedId) {
         const apiClient = await getApiClient();
         const response = await apiClient.getStatusContext(id, {
           limit: Config.fetchLimit,
-          max_id: lastFetchedId,
         });
-        setLoaded(true);
         return response.data.descendants;
       }
 
       return [];
     },
-    [id, loaded],
+    [id],
   );
 
   const getRoot = useCallback(async () => {

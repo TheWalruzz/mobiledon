@@ -1,5 +1,5 @@
-import React, { FC, useCallback, useMemo } from "react";
-import { Paper } from "@mantine/core";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { Paper, Transition } from "@mantine/core";
 import { TootContent } from "./TootContent";
 import { TootHeader } from "./TootHeader";
 import { TootFooter } from "./TootFooter";
@@ -13,6 +13,7 @@ interface TootProps {
 
 export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
   const navigate = useNavigate();
+  const [loaded, setLoaded] = useState(false);
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
 
   const onContentClick = useCallback(async () => {
@@ -33,19 +34,32 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
     navigate(`/toot/${currentToot.id}`);
   }, [navigate, currentToot]);
 
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
   return (
-    <Paper
-      shadow="xs"
-      radius={0}
-      p="xs"
-      withBorder
-      mt={-1}
-      style={{ width: "100vw", overflow: "hidden" }}
-      id={currentToot.id}
+    <Transition
+      mounted={loaded}
+      transition="fade"
+      duration={200}
+      timingFunction="ease"
     >
-      <TootHeader toot={toot} />
-      <TootContent toot={currentToot} onContentClick={onContentClick} />
-      <TootFooter toot={toot} onUpdate={onUpdate} />
-    </Paper>
+      {(styles) => (
+        <Paper
+          shadow="xs"
+          radius={0}
+          p="xs"
+          withBorder
+          mt={-1}
+          style={{ width: "100vw", overflow: "hidden", ...styles }}
+          id={currentToot.id}
+        >
+          <TootHeader toot={toot} />
+          <TootContent toot={currentToot} onContentClick={onContentClick} />
+          <TootFooter toot={toot} onUpdate={onUpdate} />
+        </Paper>
+      )}
+    </Transition>
   );
 };

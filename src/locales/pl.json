@@ -1,6 +1,7 @@
 {
   "common": {
     "noResults": "Brak wyników",
+    "search": "Szukaj...",
     "show": "Pokaż",
     "hide": "Ukryj",
     "confirmTitle": "Czy na pewno?",
@@ -27,6 +28,7 @@
     "removeFile": "Usuń",
     "confirmText": "Jeśli kontynuujesz, twój toot zniknie na zawsze.",
     "contentWarningLabel": "Opis ostrzeżenia o zawartości",
+    "sensitiveLabel": "Oznacz multimedia jako wrażliwe",
     "submitLabel": "Trąbnij!"
   },
   "timeline": {
@@ -44,7 +46,7 @@
   },
   "visibility": {
     "public": "Publiczny",
-    "unlisted": "Niewidoczny",
+    "unlisted": "Niepubliczny",
     "private": "Prywatny",
     "direct": "Bezpośredni"
   },

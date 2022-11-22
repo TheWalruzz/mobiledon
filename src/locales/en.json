@@ -1,6 +1,7 @@
 {
   "common": {
     "noResults": "No results",
+    "search": "Search...",
     "show": "Show",
     "hide": "Hide",
     "confirmTitle": "Are you sure?",
@@ -27,6 +28,7 @@
     "removeFile": "Remove",
     "confirmText": "If you continue, your toot will be lost forever.",
     "contentWarningLabel": "Content warning description",
+    "sensitiveLabel": "Mark media as sensitive",
     "submitLabel": "Toot!"
   },
   "timeline": {
