@@ -114,7 +114,7 @@ export const Poll: FC<PollProps> = ({
                 />
               ))}
             </PollComponent.Group>
-            {disableSubmit && (
+            {!disableSubmit && (
               <Button disabled={answers.length === 0} onClick={handleSubmit}>
                 {t("common.submit", "Submit")}
               </Button>
