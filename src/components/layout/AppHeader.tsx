@@ -1,23 +1,39 @@
-import React, { ReactNode, useCallback, useMemo } from "react";
+import React, { ReactNode, useCallback, useEffect, useMemo } from "react";
 import { ActionIcon, Avatar, Button, Group, Header, Menu } from "@mantine/core";
 import {
   IconBrandMastodon,
+  IconHash,
   IconList,
   IconUsers,
   IconWorld,
 } from "@tabler/icons";
-import { TimelineType, useAppContext } from "../../contexts/AppContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { TimelineType, useAppContext } from "../../contexts/AppContext";
+import { showNotification } from "@mantine/notifications";
 
 export const AppHeader = () => {
   const { t } = useTranslation();
   const { setNavbarOpen, user, currentTimeline, scrollAreaRef } =
     useAppContext();
   const navigate = useNavigate();
+  const { name } = useParams();
+
+  useEffect(() => {
+    if (currentTimeline === TimelineType.Hashtag && name) {
+      showNotification({
+        message: `${t(
+          "nav.showingHashtagTimeline",
+          "Showing hashtag timeline for",
+        )} #${name}`,
+        autoClose: 3000,
+        icon: false,
+      });
+    }
+  }, [currentTimeline, name, t]);
 
   const timelineTypes: Record<
-    Exclude<TimelineType, TimelineType.None>,
+    Exclude<TimelineType, TimelineType.None | TimelineType.Hashtag>,
     { icon: ReactNode; label: string; path: string }
   > = useMemo(
     () => ({
@@ -80,7 +96,13 @@ export const AppHeader = () => {
         </Button>
         <Menu>
           <Menu.Target>
-            <ActionIcon>{timelineTypes[timeline].icon}</ActionIcon>
+            <ActionIcon>
+              {timeline === TimelineType.Hashtag ? (
+                <IconHash />
+              ) : (
+                timelineTypes[timeline].icon
+              )}
+            </ActionIcon>
           </Menu.Target>
 
           <Menu.Dropdown>
@@ -89,19 +111,28 @@ export const AppHeader = () => {
                 key={timeline}
                 icon={
                   timelineTypes[
-                    timeline as Exclude<TimelineType, TimelineType.None>
+                    timeline as Exclude<
+                      TimelineType,
+                      TimelineType.None | TimelineType.Hashtag
+                    >
                   ].icon
                 }
                 component={Link}
                 to={
                   timelineTypes[
-                    timeline as Exclude<TimelineType, TimelineType.None>
+                    timeline as Exclude<
+                      TimelineType,
+                      TimelineType.None | TimelineType.Hashtag
+                    >
                   ].path
                 }
               >
                 {
                   timelineTypes[
-                    timeline as Exclude<TimelineType, TimelineType.None>
+                    timeline as Exclude<
+                      TimelineType,
+                      TimelineType.None | TimelineType.Hashtag
+                    >
                   ].label
                 }
               </Menu.Item>

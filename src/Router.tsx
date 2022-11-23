@@ -7,6 +7,8 @@ import { Login } from "./components/views/Login";
 import { LocalTimeline } from "./components/views/LocalTimeline";
 import { GlobalTimeline } from "./components/views/GlobalTimeline";
 import { TootThread } from "./components/views/TootThread";
+import { User } from "./components/views/User";
+import { Hashtag } from "./components/views/Hashtag";
 
 export const Router = () => {
   return (
@@ -18,6 +20,9 @@ export const Router = () => {
         <Route path="local" element={<LocalTimeline />} />
         <Route path="global" element={<GlobalTimeline />} />
         <Route path="toot/:id" element={<TootThread />} />
+        <Route path="user/:id" element={<User />} />
+        <Route path="tag/:name" element={<Hashtag />} />
+        {/* TODO: add 404 page */}
       </Route>
     </Routes>
   );

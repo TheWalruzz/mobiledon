@@ -14,6 +14,7 @@ export enum TimelineType {
   Home = "Home",
   Local = "Local",
   Global = "Global",
+  Hashtag = "Hashtag",
 }
 
 export interface AppContextType {

@@ -17,6 +17,7 @@ export const prepareTextForRender = (
     );
   });
 
+  // TODO: fix url replacement for outside mentions and hashtags
   mentions.forEach((mention) => {
     newText = newText.replaceAll(
       mention.url,

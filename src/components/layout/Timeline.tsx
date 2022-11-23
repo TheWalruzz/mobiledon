@@ -79,7 +79,7 @@ export const Timeline: FC<TimelineProps> = ({
   );
 
   const onSubmit = useCallback(
-    async (text: string, options?: Record<string, any>) => {
+    async (text: string, options: Record<string, any> = {}) => {
       const apiClient = await getApiClient();
       await apiClient.postStatus(text, options);
       onRefresh();

@@ -13,6 +13,7 @@ import { CustomModalProvider } from "./contexts/CustomModalContext";
 import { EditTootModal } from "./components/modals/EditTootModal";
 import { ImageDetailsModal } from "./components/modals/ImageDetailsModal";
 import { usePreference } from "./hooks/usePreference";
+import { NotificationsProvider } from "@mantine/notifications";
 
 export const App = () => {
   // TODO: extract this to context dependent on user's preferences
@@ -41,18 +42,20 @@ export const App = () => {
         withNormalizeCSS
       >
         <AppContextProvider>
-          <BrowserRouter>
-            <ModalsProvider>
-              <CustomModalProvider
-                customModals={{
-                  editToot: EditTootModal,
-                  imageDetails: ImageDetailsModal,
-                }}
-              >
-                <Router />
-              </CustomModalProvider>
-            </ModalsProvider>
-          </BrowserRouter>
+          <NotificationsProvider position="bottom-left">
+            <BrowserRouter>
+              <ModalsProvider>
+                <CustomModalProvider
+                  customModals={{
+                    editToot: EditTootModal,
+                    imageDetails: ImageDetailsModal,
+                  }}
+                >
+                  <Router />
+                </CustomModalProvider>
+              </ModalsProvider>
+            </BrowserRouter>
+          </NotificationsProvider>
         </AppContextProvider>
       </MantineProvider>
     </ColorSchemeProvider>

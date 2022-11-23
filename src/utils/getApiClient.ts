@@ -1,7 +1,7 @@
 import { Preferences } from "@capacitor/preferences";
-import megalodon, { MegalodonInterface } from "megalodon";
+import megalodon, { Mastodon } from "megalodon";
 
-let cachedClient: MegalodonInterface;
+let cachedClient: Mastodon;
 
 export const getApiClient = async (bustCache: boolean = false) => {
   if (!cachedClient || bustCache) {
@@ -12,7 +12,7 @@ export const getApiClient = async (bustCache: boolean = false) => {
       "mastodon",
       instanceUrl.value!,
       accessToken.value || undefined,
-    );
+    ) as Mastodon;
   }
 
   return cachedClient;
