@@ -1,3 +1,5 @@
+import { sanitize } from "dompurify";
+
 export const prepareTextForRender = (text: string, emojis: Entity.Emoji[]) => {
   let newText = text;
 
@@ -8,5 +10,5 @@ export const prepareTextForRender = (text: string, emojis: Entity.Emoji[]) => {
     );
   });
 
-  return newText;
+  return sanitize(newText);
 };
