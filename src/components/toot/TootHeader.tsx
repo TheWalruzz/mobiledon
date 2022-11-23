@@ -83,7 +83,7 @@ export const TootHeader: FC<TootHeaderProps> = ({
           </Text>
         )}
         <Link
-          to={`/user/@${currentToot.account.acct}`}
+          to={`/user/${currentToot.account.acct}`}
           title={currentToot.account.acct}
         >
           <Flex gap="xs" direction="row" align="center" wrap="nowrap" mb="sm">
@@ -104,7 +104,6 @@ export const TootHeader: FC<TootHeaderProps> = ({
               />
             </Indicator>
 
-            {/* TODO: add ellipsis for longer names */}
             <Stack spacing={0} style={{ flexGrow: 1, minWidth: 0 }}>
               <Text
                 fw={600}

@@ -70,13 +70,13 @@ export const AppHeader = () => {
   );
 
   const onHomeClick = useCallback(() => {
-    if (scrollAreaRef.current && currentTimeline !== TimelineType.None) {
+    if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
     navigate("/");
-  }, [currentTimeline, navigate, scrollAreaRef]);
+  }, [navigate, scrollAreaRef]);
 
   return (
     <Header height={60} p="md">

@@ -1,11 +1,10 @@
 import React, { FC, useCallback } from "react";
 import { Spoiler, Text, TypographyStylesProvider } from "@mantine/core";
-import { prepareTextForRender } from "../../utils/prepareTextContent";
-import { InnerHTML } from "../utils/InnerHTML";
 import { MediaGrid } from "../layout/MediaGrid";
 import { useTranslation } from "react-i18next";
 import { Poll } from "../layout/Poll";
 import { getApiClient } from "../../utils/getApiClient";
+import { ParsedContent } from "./ParsedContent";
 
 interface TootContentProps {
   toot: Entity.Status;
@@ -36,9 +35,7 @@ export const TootContent: FC<TootContentProps> = ({
       <TypographyStylesProvider>
         {toot.spoiler_text && (
           <Text mb="xs" onClick={onContentClick}>
-            <InnerHTML component="p">
-              {prepareTextForRender(toot.spoiler_text, toot)}
-            </InnerHTML>
+            <ParsedContent html={toot.content} context={toot} />
           </Text>
         )}
         <Spoiler
@@ -47,9 +44,11 @@ export const TootContent: FC<TootContentProps> = ({
           hideLabel={t("common.hide", "Hide")}
           mb="xs"
         >
-          <InnerHTML component="div" onClick={onContentClick}>
-            {prepareTextForRender(toot.content, toot)}
-          </InnerHTML>
+          <ParsedContent
+            html={toot.content}
+            context={toot}
+            onClick={onContentClick}
+          />
           {toot.poll && (
             <Poll
               poll={toot.poll}
