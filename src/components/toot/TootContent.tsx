@@ -11,14 +11,14 @@ interface TootContentProps {
   toot: Entity.Status;
   onContentClick: () => void;
   onUpdate: () => void;
-  displayOnly?: boolean;
+  readOnly?: boolean;
 }
 
 export const TootContent: FC<TootContentProps> = ({
   toot,
   onContentClick,
   onUpdate,
-  displayOnly = false,
+  readOnly = false,
 }) => {
   const { t } = useTranslation();
 
@@ -54,7 +54,7 @@ export const TootContent: FC<TootContentProps> = ({
             <Poll
               poll={toot.poll}
               onSubmit={onPollSubmit}
-              disableSubmit={displayOnly}
+              disableSubmit={readOnly}
             />
           )}
         </Spoiler>

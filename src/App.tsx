@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   ColorScheme,
   ColorSchemeProvider,
@@ -12,25 +12,27 @@ import { ModalsProvider } from "@mantine/modals";
 import { CustomModalProvider } from "./contexts/CustomModalContext";
 import { EditTootModal } from "./components/modals/EditTootModal";
 import { ImageDetailsModal } from "./components/modals/ImageDetailsModal";
+import { usePreference } from "./hooks/usePreference";
 
 export const App = () => {
   // TODO: extract this to context dependent on user's preferences
   const preferredColorScheme = useColorScheme();
-  const [colorScheme, setColorScheme] =
-    useState<ColorScheme>(preferredColorScheme);
+  const [colorScheme, setColorScheme] = usePreference<ColorScheme>("theme");
   const toggleColorScheme = useCallback(
     (value?: ColorScheme) =>
       setColorScheme(value || (colorScheme === "dark" ? "light" : "dark")),
-    [colorScheme],
+    [colorScheme, setColorScheme],
   );
 
   useEffect(() => {
-    setColorScheme(preferredColorScheme);
-  }, [preferredColorScheme]);
+    if (!colorScheme) {
+      setColorScheme(preferredColorScheme);
+    }
+  }, [colorScheme, preferredColorScheme, setColorScheme]);
 
   return (
     <ColorSchemeProvider
-      colorScheme={colorScheme}
+      colorScheme={colorScheme!}
       toggleColorScheme={toggleColorScheme}
     >
       <MantineProvider

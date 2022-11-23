@@ -200,7 +200,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
               toot={toot.reblog || toot}
               onContentClick={() => {}}
               onUpdate={() => {}}
-              displayOnly
+              readOnly
             />
           </Spoiler>
         </Paper>
