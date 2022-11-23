@@ -34,6 +34,7 @@
   },
   "poll": {
     "totalVoters": "Total votes: {{votes}}",
+    "expiresShort": "Expires",
     "expirationTimes": {
       "5Minutes": "5 Minutes",
       "30Minutes": "30 Minutes",

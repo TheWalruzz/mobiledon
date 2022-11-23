@@ -11,6 +11,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
+import ReactTimeAgo from "react-time-ago";
 
 const useStyles = createStyles(() => ({
   listItem: {
@@ -39,12 +40,14 @@ export const Poll: FC<PollProps> = ({
   disableSubmit = false,
 }) => {
   const { classes } = useStyles();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [answers, setAnswers] = useState<string[]>([]);
   const PollComponent = useMemo(
     () => (poll.multiple ? Checkbox : Radio),
     [poll.multiple],
   );
+
+  const pollExpirationDate = useMemo(() => new Date(poll.expires_at!), [poll]);
 
   const handleSubmit = useCallback(() => {
     onSubmit(answers.map((answer) => Number(answer)));
@@ -114,8 +117,14 @@ export const Poll: FC<PollProps> = ({
                 />
               ))}
             </PollComponent.Group>
-            {/* TODO: add "expires in" information */}
-            {/* <Text>{t("poll.expiresIn", "Expires in")}</Text> */}
+            <Text c="dimmed" fz="xs">
+              {t("poll.expiresShort", "Expires")}{" "}
+              <ReactTimeAgo
+                future
+                date={pollExpirationDate}
+                locale={i18n.language}
+              />
+            </Text>
             {!disableSubmit && (
               <Button disabled={answers.length === 0} onClick={handleSubmit}>
                 {t("common.submit", "Submit")}
