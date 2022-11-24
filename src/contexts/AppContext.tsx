@@ -39,7 +39,7 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
     TimelineType.None,
   );
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
-  const [apiClient, setApiClient] = useState<Mastodon>({} as any);
+  const [apiClient, setApiClient] = useState<Mastodon>(undefined as any);
 
   const value = useMemo(
     () => ({

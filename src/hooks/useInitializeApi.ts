@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Preferences } from "@capacitor/preferences";
 import { getApiClient } from "../utils/getApiClient";
-import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../contexts/AppContext";
 
 export const useInitializeApi = () => {
