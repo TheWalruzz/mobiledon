@@ -1,8 +1,9 @@
+import { Account } from "masto";
 import { prepareTextForRender } from "./prepareTextContent";
 
-export const getDisplayName = (account: Entity.Account) => {
+export const getDisplayName = (account: Account) => {
   return prepareTextForRender(
-    account.display_name || account.username,
+    account.displayName || account.username,
     account.emojis,
   );
 };

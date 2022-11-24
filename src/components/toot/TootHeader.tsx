@@ -17,9 +17,10 @@ import { getDisplayName } from "../../utils/getDisplayName";
 import { InnerHTML } from "../utils/InnerHTML";
 import { VisibilityIcon } from "../utils/VisibilityIcon";
 import { useTranslation } from "react-i18next";
+import { Status } from "masto";
 
 interface TootHeaderProps {
-  toot: Entity.Status;
+  toot: Status;
   hideDate?: boolean;
   hideReblog?: boolean;
 }
@@ -57,7 +58,7 @@ export const TootHeader: FC<TootHeaderProps> = ({
   const { classes } = useStyles();
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
   const createdAt = useMemo(
-    () => new Date(currentToot.created_at),
+    () => new Date(currentToot.createdAt),
     [currentToot],
   );
 

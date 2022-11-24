@@ -18,8 +18,9 @@ import { IconBrandMastodon } from "@tabler/icons";
 import validator from "validator";
 import normalizeUrl from "normalize-url";
 import { Preferences } from "@capacitor/preferences";
-import { getApiClient } from "../../utils/getApiClient";
 import { useTranslation } from "react-i18next";
+import { getApiClient } from "../../utils/getApiClient";
+import qs from "qs";
 
 export const Login = () => {
   const { t } = useTranslation();
@@ -42,22 +43,29 @@ export const Login = () => {
           defaultProtocol: "https",
         });
         await Preferences.set({ key: "instanceUrl", value: normalizedUrl });
+
         const client = await getApiClient();
 
-        const appData = await client.registerApp("Mobiledon", {
-          scopes: ["read", "write", "follow", "push"],
-          // TODO: check this for Android and make it work if necessary
-          redirect_uris: `${window.location.origin}/auth`,
+        const appData = await client.apps.create({
+          clientName: "Mobiledon",
+          scopes: "read write follow push",
+          redirectUris: `${window.location.origin}/auth`,
           website: "https://radej.dev",
         });
-        await Preferences.set({ key: "clientId", value: appData.clientId });
+        await Preferences.set({ key: "clientId", value: appData.clientId! });
         await Preferences.set({
           key: "clientSecret",
-          value: appData.clientSecret,
+          value: appData.clientSecret!,
         });
-        if (appData.url) {
-          window.location.assign(appData.url);
-        }
+        const url = `${normalizedUrl}/oauth/authorize?${qs.stringify({
+          response_type: "code",
+          client_id: appData.clientId!,
+          client_secret: appData.clientSecret!,
+          scope: "read write follow push",
+          redirect_uri: `${window.location.origin}/auth`,
+        })}`;
+
+        window.location.assign(url);
       }
     },
     [instanceUrl, isValidUrl],

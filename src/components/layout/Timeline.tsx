@@ -13,29 +13,33 @@ import { useIntersection } from "@mantine/hooks";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import RenderIfVisible from "react-render-if-visible";
 import { IconArrowBigDownLines, IconPencil } from "@tabler/icons";
-import { Toot } from "../toot/Toot";
 import { useTranslation } from "react-i18next";
+import { Status, WsEvents } from "masto";
+import { Toot } from "../toot/Toot";
 import { useAppContext } from "../../contexts/AppContext";
 import { Config } from "../../config";
 import { EditTootModalProps } from "../modals/EditTootModal";
 import { useCustomModal } from "../../contexts/CustomModalContext";
+import { useWebSocketEvent } from "../../hooks/useWebSocketEvent";
 
 interface TimelineProps {
-  fetchData: (lastFetchedId?: string) => Promise<Entity.Status[]>;
+  fetchData: (lastFetchedId?: string) => Promise<Status[]>;
   firstItem?: ReactNode;
   lastItem?: ReactNode;
+  eventStream?: WsEvents;
 }
 
 export const Timeline: FC<TimelineProps> = ({
   fetchData,
   firstItem,
   lastItem,
+  eventStream,
 }) => {
   const { t } = useTranslation();
   const { openCustomModal } = useCustomModal();
   const { scrollAreaRef, apiClient } = useAppContext();
   // TODO: save loaded toots in global state for back functionality
-  const [toots, setToots] = useState<Entity.Status[]>([]);
+  const [toots, setToots] = useState<Status[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const { ref: sentryRef, entry } = useIntersection({
@@ -65,11 +69,11 @@ export const Timeline: FC<TimelineProps> = ({
 
   const onTootUpdate = useCallback(
     async (id: string) => {
-      const updatedStatus = await apiClient.getStatus(id);
+      const updatedStatus = await apiClient.statuses.fetch(id);
       const newToots = [...toots];
       const index = toots.findIndex((value) => value.id === id);
       if (index !== -1) {
-        newToots[index] = updatedStatus.data;
+        newToots[index] = updatedStatus;
         setToots(newToots);
       }
     },
@@ -78,7 +82,7 @@ export const Timeline: FC<TimelineProps> = ({
 
   const onSubmit = useCallback(
     async (text: string, options: Record<string, any> = {}) => {
-      await apiClient.postStatus(text, options);
+      await apiClient.statuses.create({ status: text, ...options });
       onRefresh();
     },
     [apiClient, onRefresh],
@@ -90,6 +94,12 @@ export const Timeline: FC<TimelineProps> = ({
       onSubmit,
     });
   }, [onSubmit, openCustomModal, t]);
+
+  const onStreamUpdate = useCallback((toot: Status) => {
+    setToots((oldToots) => [toot, ...oldToots]);
+  }, []);
+
+  useWebSocketEvent(eventStream, "update", onStreamUpdate);
 
   useEffect(() => {
     if (entry?.isIntersecting && hasMore) {

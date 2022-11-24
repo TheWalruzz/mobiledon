@@ -19,6 +19,7 @@ import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import Mention from "@tiptap/extension-mention";
 import { IconAlertTriangle, IconList, IconPaperclip } from "@tabler/icons";
+import { Status } from "masto";
 import { TootHeader } from "../toot/TootHeader";
 import { TootContent } from "../toot/TootContent";
 import { Visibility, VisibilityIcon } from "../utils/VisibilityIcon";
@@ -36,7 +37,7 @@ import {
 import { useAppContext } from "../../contexts/AppContext";
 
 export interface EditTootModalProps extends Record<string, unknown> {
-  toot?: Entity.Status;
+  toot?: Status;
   initialValue?: string;
   initialVisibility?: Visibility;
   onSubmit: (text: string, options?: Record<string, any>) => void;
@@ -127,13 +128,14 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
       mediaIds = (
         await Promise.all(
           files.map(({ file, description, focus }) =>
-            apiClient.uploadMedia(file, {
+            apiClient.mediaAttachments.create({
+              file,
               description,
               focus: focus ? `${focus.x},${focus.y}` : undefined,
             }),
           ),
         )
-      ).map((result) => result.data.id);
+      ).map((result) => result.id);
     }
 
     onSubmit(editor?.getText() ?? "", {

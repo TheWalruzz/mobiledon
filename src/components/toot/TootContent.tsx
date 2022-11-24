@@ -5,9 +5,10 @@ import { useTranslation } from "react-i18next";
 import { Poll } from "../layout/Poll";
 import { ParsedContent } from "./ParsedContent";
 import { useAppContext } from "../../contexts/AppContext";
+import { Status } from "masto";
 
 interface TootContentProps {
-  toot: Entity.Status;
+  toot: Status;
   onContentClick: () => void;
   onUpdate: () => void;
   readOnly?: boolean;
@@ -24,7 +25,9 @@ export const TootContent: FC<TootContentProps> = ({
 
   const onPollSubmit = useCallback(
     async (values: number[]) => {
-      await apiClient.votePoll(toot.poll?.id!, values);
+      await apiClient.poll.vote(toot.poll?.id!, {
+        choices: values.map(String),
+      });
       onUpdate();
     },
     [apiClient, onUpdate, toot.poll?.id],
@@ -33,13 +36,13 @@ export const TootContent: FC<TootContentProps> = ({
   return (
     <>
       <TypographyStylesProvider>
-        {toot.spoiler_text && (
+        {toot.spoilerText && (
           <Text mb="xs" onClick={onContentClick}>
             <ParsedContent html={toot.content} context={toot} />
           </Text>
         )}
         <Spoiler
-          maxHeight={toot.spoiler_text ? 0 : 150}
+          maxHeight={toot.spoilerText ? 0 : 150}
           showLabel={t("common.show", "Show")}
           hideLabel={t("common.hide", "Hide")}
           mb="xs"
@@ -58,8 +61,8 @@ export const TootContent: FC<TootContentProps> = ({
           )}
         </Spoiler>
       </TypographyStylesProvider>
-      {toot.media_attachments.length > 0 && (
-        <MediaGrid items={toot.media_attachments} sensitive={toot.sensitive} />
+      {toot.mediaAttachments.length > 0 && (
+        <MediaGrid items={toot.mediaAttachments} sensitive={toot.sensitive} />
       )}
     </>
   );

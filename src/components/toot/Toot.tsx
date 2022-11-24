@@ -5,9 +5,10 @@ import { TootContent } from "./TootContent";
 import { TootHeader } from "./TootHeader";
 import { TootFooter } from "./TootFooter";
 import { useAppContext } from "../../contexts/AppContext";
+import { Status } from "masto";
 
 interface TootProps {
-  toot: Entity.Status;
+  toot: Status;
   onUpdate: (id: string) => void;
 }
 
@@ -18,21 +19,21 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
 
   const onContentClick = useCallback(async () => {
-    if (currentToot.in_reply_to_id) {
-      const context = await apiClient.getStatusContext(
-        currentToot.in_reply_to_id,
+    if (currentToot.inReplyToId) {
+      const context = await apiClient.statuses.fetchContext(
+        currentToot.inReplyToId,
       );
-      if (context.data.ancestors.length > 0) {
-        navigate(`/toot/${context.data.ancestors[0].id}`);
+      if (context.ancestors.length > 0) {
+        navigate(`/toot/${context.ancestors[0].id}`);
       } else {
-        navigate(`/toot/${currentToot.in_reply_to_id}`);
+        navigate(`/toot/${currentToot.inReplyToId}`);
       }
 
       return;
     }
 
     navigate(`/toot/${currentToot.id}`);
-  }, [currentToot.in_reply_to_id, currentToot.id, navigate, apiClient]);
+  }, [currentToot.inReplyToId, currentToot.id, navigate, apiClient]);
 
   const handleUpdate = useCallback(() => {
     onUpdate(toot.id);

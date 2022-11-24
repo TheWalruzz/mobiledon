@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
+import { Poll as PollType } from "masto";
 import { useTranslation } from "react-i18next";
 import ReactTimeAgo from "react-time-ago";
 
@@ -29,7 +30,7 @@ const useStyles = createStyles(() => ({
 }));
 
 interface PollProps {
-  poll: Entity.Poll;
+  poll: PollType;
   onSubmit: (values: number[]) => void;
   disableSubmit: boolean;
 }
@@ -47,7 +48,7 @@ export const Poll: FC<PollProps> = ({
     [poll.multiple],
   );
 
-  const pollExpirationDate = useMemo(() => new Date(poll.expires_at!), [poll]);
+  const pollExpirationDate = useMemo(() => new Date(poll.expiresAt!), [poll]);
 
   const handleSubmit = useCallback(() => {
     onSubmit(answers.map((answer) => Number(answer)));
@@ -67,9 +68,9 @@ export const Poll: FC<PollProps> = ({
                   icon={
                     <Text size="sm">
                       {`${
-                        poll.votes_count
+                        poll.votesCount
                           ? (
-                              ((option.votes_count || 0) / poll.votes_count) *
+                              ((option.votesCount || 0) / poll.votesCount) *
                               100
                             ).toFixed(0)
                           : 0
@@ -81,7 +82,7 @@ export const Poll: FC<PollProps> = ({
                   <Progress
                     value={
                       +(
-                        ((option.votes_count || 0) / poll.votes_count) *
+                        ((option.votesCount || 0) / poll.votesCount) *
                         100
                       ).toFixed(0)
                     }
@@ -91,7 +92,7 @@ export const Poll: FC<PollProps> = ({
             </List>
             <Text c="dimmed">
               {t("poll.totalVoters", "Total votes: {{votes}}", {
-                votes: poll.votes_count,
+                votes: poll.votesCount,
               })}
             </Text>
           </>

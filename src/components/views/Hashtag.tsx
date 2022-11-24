@@ -1,12 +1,15 @@
-import React, { useCallback, useEffect } from "react";
+import { WsEvents } from "masto";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Config } from "../../config";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
+import { filterDefinedKeys } from "../../utils/filterObject";
 import { Timeline } from "../layout/Timeline";
 
 export const Hashtag = () => {
   const { setCurrentTimeline, apiClient } = useAppContext();
   const { name } = useParams();
+  const [eventStream, setEventStream] = useState<WsEvents>();
 
   useEffect(() => {
     setCurrentTimeline(TimelineType.Hashtag);
@@ -14,14 +17,29 @@ export const Hashtag = () => {
 
   const fetchData = useCallback(
     async (lastFetchedId?: string) => {
-      const response = await apiClient.getTagTimeline(name!, {
-        limit: Config.fetchLimit,
-        max_id: lastFetchedId,
-      });
-      return response.data;
+      const response = await apiClient.timelines.fetchHashtag(
+        name!,
+        filterDefinedKeys({
+          limit: Config.fetchLimit,
+          maxId: lastFetchedId,
+        }),
+      );
+      return response.value;
     },
     [apiClient, name],
   );
 
-  return <Timeline fetchData={fetchData} />;
+  useEffect(() => {
+    let stream: WsEvents;
+    (async () => {
+      stream = await apiClient.stream.streamTagTimeline(name!);
+      setEventStream(stream);
+    })();
+
+    return () => stream?.disconnect();
+  }, [apiClient, name]);
+
+  return eventStream ? (
+    <Timeline fetchData={fetchData} eventStream={eventStream} />
+  ) : null;
 };

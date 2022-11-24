@@ -1,6 +1,7 @@
 import { sanitize } from "dompurify";
+import { Emoji } from "masto";
 
-export const prepareTextForRender = (text: string, emojis: Entity.Emoji[]) => {
+export const prepareTextForRender = (text: string, emojis: Emoji[]) => {
   let newText = text;
 
   emojis.forEach((emoji) => {

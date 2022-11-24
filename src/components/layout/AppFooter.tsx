@@ -4,21 +4,27 @@ import { IconBell, IconHome, IconMail, IconSearch } from "@tabler/icons";
 import { useNavigate } from "react-router-dom";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Config } from "../../config";
+import { useWebSocketEvent } from "../../hooks/useWebSocketEvent";
 
 export const AppFooter = () => {
   const [notificationCount, setNotificationCount] = useState(0);
-  const { currentTimeline, scrollAreaRef, apiClient } = useAppContext();
+  const { currentTimeline, scrollAreaRef, apiClient, streams } =
+    useAppContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    (async () => {
-      const notifications = await apiClient.getNotifications({
-        limit: Config.fetchLimit,
-      });
+  const fetchNotifications = useCallback(async () => {
+    const notifications = await apiClient.notifications.fetchMany({
+      limit: Config.fetchLimit,
+    });
 
-      setNotificationCount(notifications.data.length);
-    })();
-  }, [apiClient]);
+    setNotificationCount(notifications.value.length);
+  }, [apiClient.notifications]);
+
+  useWebSocketEvent(streams.user, "notification", fetchNotifications);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   const navigateToHome = useCallback(() => {
     if (currentTimeline === TimelineType.Home && scrollAreaRef.current) {

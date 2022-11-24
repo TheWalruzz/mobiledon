@@ -5,10 +5,11 @@ import { PluginKey } from "prosemirror-state";
 import { getApiClient } from "../../utils/getApiClient";
 
 import { MentionList } from "./MentionList";
+import { Results } from "masto";
 
 export const suggestion = <
-  T extends keyof Entity.Results,
-  U extends Entity.Results[T][number],
+  T extends keyof Results,
+  U extends Results[T][number],
 >(
   suggestionChar: string,
   searchType: T,
@@ -20,10 +21,8 @@ export const suggestion = <
   items: async ({ query }: { query: string }) => {
     if (query) {
       const apiClient = await getApiClient();
-      const results = await apiClient.search(query, searchType, {
-        limit: 5,
-      });
-      return results.data[searchType].map(resultsMapper as any);
+      const results = await apiClient.search({ q: query, limit: 5 });
+      return (await results.next()).value[searchType].map(resultsMapper as any);
     }
 
     return [];

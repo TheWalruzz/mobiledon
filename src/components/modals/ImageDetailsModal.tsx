@@ -56,7 +56,6 @@ export const ImageDetailsModal: FC<
   useEffect(() => {
     let picker: FocusPicker;
     if (imageRef.current && ready) {
-      console.log("initializing");
       picker = new FocusPicker(imageRef.current, {
         onChange: (focus) => setFocus(focus),
         focus: focus,

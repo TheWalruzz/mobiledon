@@ -15,12 +15,13 @@ import {
   IconStar,
 } from "@tabler/icons";
 import { useTranslation } from "react-i18next";
+import { Status } from "masto";
 import { EditTootModalProps } from "../modals/EditTootModal";
 import { useCustomModal } from "../../contexts/CustomModalContext";
 import { useAppContext } from "../../contexts/AppContext";
 
 interface TootFooterProps {
-  toot: Entity.Status;
+  toot: Status;
   onUpdate: () => void;
 }
 
@@ -36,7 +37,7 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
   const share = useCallback(
     () =>
       navigator.share({
-        url: currentToot.url,
+        url: currentToot.url!,
       }),
     [currentToot],
   );
@@ -44,35 +45,36 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
   // TODO: refresh data after doing actions
   const boost = useCallback(async () => {
     if (currentToot.reblogged) {
-      await apiClient.unreblogStatus(currentToot.id);
+      await apiClient.statuses.unreblog(currentToot.id);
     } else {
-      await apiClient.reblogStatus(currentToot.id);
+      await apiClient.statuses.reblog(currentToot.id);
     }
     onUpdate();
   }, [currentToot.reblogged, currentToot.id, onUpdate, apiClient]);
 
   const favorite = useCallback(async () => {
     if (currentToot.favourited) {
-      await apiClient.unfavouriteStatus(currentToot.id);
+      await apiClient.statuses.unfavourite(currentToot.id);
     } else {
-      await apiClient.favouriteStatus(currentToot.id);
+      await apiClient.statuses.favourite(currentToot.id);
     }
     onUpdate();
   }, [apiClient, currentToot.favourited, currentToot.id, onUpdate]);
 
   const bookmark = useCallback(async () => {
     if (currentToot.bookmarked) {
-      await apiClient.unbookmarkStatus(currentToot.id);
+      await apiClient.statuses.unbookmark(currentToot.id);
     } else {
-      await apiClient.bookmarkStatus(currentToot.id);
+      await apiClient.statuses.bookmark(currentToot.id);
     }
     onUpdate();
   }, [apiClient, currentToot.bookmarked, currentToot.id, onUpdate]);
 
   const onSubmit = useCallback(
     async (text: string, options?: Record<string, any>) => {
-      await apiClient.postStatus(text, {
-        in_reply_to_id: currentToot.id,
+      await apiClient.statuses.create({
+        status: text,
+        inReplyToId: currentToot.id,
         ...options,
       });
     },
@@ -101,7 +103,7 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
           variant="subtle"
           onClick={reply}
         >
-          {currentToot.replies_count > 1 ? "1+" : currentToot.replies_count}
+          {currentToot.repliesCount > 1 ? "1+" : currentToot.repliesCount}
         </Button>
 
         <Button
@@ -113,7 +115,7 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
           variant="subtle"
           onClick={boost}
         >
-          {currentToot.reblogs_count > 999 ? "1K+" : currentToot.reblogs_count}
+          {currentToot.reblogsCount > 999 ? "1K+" : currentToot.reblogsCount}
         </Button>
 
         <Button
@@ -125,9 +127,9 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
           variant="subtle"
           onClick={favorite}
         >
-          {currentToot.favourites_count > 999
+          {currentToot.favouritesCount > 999
             ? "1K+"
-            : currentToot.favourites_count}
+            : currentToot.favouritesCount}
         </Button>
 
         <ActionIcon

@@ -2,9 +2,10 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { Button, Grid, Space, Text } from "@mantine/core";
 import { MediaDisplay } from "./MediaDisplay";
 import ImageViewer from "react-simple-image-viewer";
+import { Attachment } from "masto";
 
 interface MediaGridProps {
-  items: Entity.Attachment[];
+  items: Attachment[];
   sensitive: boolean;
 }
 
@@ -13,14 +14,14 @@ export const MediaGrid: FC<MediaGridProps> = ({ items, sensitive }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  const viewerImages = useMemo(() => items.map((item) => item.url), [items]);
+  const viewerImages = useMemo(() => items.map((item) => item.url!), [items]);
 
   const onSensitiveToggle = useCallback(() => {
     setShowSensitiveFilter((old) => !old);
   }, []);
 
   const onItemClick = useCallback(
-    (item: Entity.Attachment) => {
+    (item: Attachment) => {
       const index = viewerImages.findIndex((image) => image === item.url);
       setCurrentImage(index);
       setIsViewerOpen(true);

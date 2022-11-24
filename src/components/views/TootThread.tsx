@@ -3,12 +3,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Timeline } from "../layout/Timeline";
 import { Toot } from "../toot/Toot";
-import { Config } from "../../config";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
+import { Status } from "masto";
 
 export const TootThread = () => {
   const { id } = useParams();
-  const [root, setRoot] = useState<Entity.Status>();
+  const [root, setRoot] = useState<Status>();
 
   const { setCurrentTimeline, apiClient } = useAppContext();
 
@@ -19,10 +19,8 @@ export const TootThread = () => {
   const fetchData = useCallback(
     async (lastFetchedId?: string) => {
       if (id && !lastFetchedId) {
-        const response = await apiClient.getStatusContext(id, {
-          limit: Config.fetchLimit,
-        });
-        return response.data.descendants;
+        const response = await apiClient.statuses.fetchContext(id);
+        return response.descendants;
       }
 
       return [];
@@ -32,8 +30,8 @@ export const TootThread = () => {
 
   const getRoot = useCallback(async () => {
     if (id) {
-      const response = await apiClient.getStatus(id);
-      setRoot(response.data);
+      const response = await apiClient.statuses.fetch(id);
+      setRoot(response);
     }
   }, [apiClient, id]);
 

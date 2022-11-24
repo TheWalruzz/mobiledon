@@ -1,12 +1,13 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { FocusedImage } from "image-focus";
+import { Attachment } from "masto";
 import { blurHashToDataURL } from "../../utils/blurhashToDataUrl";
 import { downloadFile } from "../../utils/downloadFile";
 
 interface MediaDisplayProps {
-  attachment: Entity.Attachment;
+  attachment: Attachment;
   showBlur: boolean;
-  onClick: (attachment: Entity.Attachment) => void;
+  onClick: (attachment: Attachment) => void;
   fullHeight?: boolean;
 }
 
@@ -24,7 +25,7 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
 
   const handleClick = useCallback(() => {
     if (attachment.type === "unknown") {
-      downloadFile(attachment.remote_url || attachment.url);
+      downloadFile(attachment.remoteUrl || attachment.url!);
     } else if (!showBlur) {
       onClick(attachment);
     }
@@ -62,7 +63,7 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
               ref={imageRef as any}
               loop
               autoPlay
-              src={attachment.url}
+              src={attachment.url!}
               preload="metadata"
             />
           );
@@ -71,7 +72,7 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
             <video
               width="100%"
               loop
-              src={attachment.url}
+              src={attachment.url!}
               controls
               preload="metadata"
             />
@@ -79,7 +80,7 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
         }
       case "audio":
         return (
-          <audio style={{ width: "100%" }} src={attachment.url} controls />
+          <audio style={{ width: "100%" }} src={attachment.url!} controls />
         );
       case "image":
       default:
@@ -90,7 +91,7 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
             src={
               showBlur || attachment.type === "unknown"
                 ? blurredImage
-                : attachment.preview_url
+                : attachment.previewUrl!
             }
             alt={attachment.description ?? ""}
             onClick={handleClick}
@@ -99,7 +100,7 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
     }
   }, [
     attachment.description,
-    attachment.preview_url,
+    attachment.previewUrl,
     attachment.type,
     attachment.url,
     blurredImage,

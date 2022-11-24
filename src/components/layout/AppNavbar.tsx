@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 export const AppNavbar = () => {
   const { t } = useTranslation();
-  const { isNavbarOpen, setNavbarOpen, apiClient } = useAppContext();
+  const { isNavbarOpen, setNavbarOpen } = useAppContext();
   const navigate = useNavigate();
 
   const onClose = useCallback(() => setNavbarOpen(false), [setNavbarOpen]);
@@ -35,7 +35,12 @@ export const AppNavbar = () => {
     [t],
   );
 
+  // TODO: fix the logout!
+  // currently, it throws cors errors...
   const onLogout = useCallback(async () => {
+    const { value: instanceUrl } = await Preferences.get({
+      key: "instanceUrl",
+    });
     const { value: clientId } = await Preferences.get({ key: "clientId" });
     const { value: clientSecret } = await Preferences.get({
       key: "clientSecret",
@@ -43,13 +48,31 @@ export const AppNavbar = () => {
     const { value: accessToken } = await Preferences.get({
       key: "accessToken",
     });
-    await apiClient.revokeToken(clientId!, clientSecret!, accessToken!);
+    try {
+      const result = await fetch(`${instanceUrl}/oauth/revoke/`, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          token: accessToken,
+        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(result);
+      return;
+    } catch (e) {
+      console.error(e);
+    }
     await Preferences.remove({ key: "clientId" });
     await Preferences.remove({ key: "clientSecret" });
     await Preferences.remove({ key: "accessToken" });
     await Preferences.remove({ key: "instanceUrl" });
     navigate("/");
-  }, [apiClient, navigate]);
+  }, [navigate]);
 
   return (
     <Drawer

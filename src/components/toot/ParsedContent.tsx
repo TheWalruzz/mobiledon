@@ -2,10 +2,11 @@ import React, { FC, MouseEvent, useCallback, useMemo } from "react";
 import parse, { DOMNode, domToReact, Element } from "html-react-parser";
 import { Link } from "react-router-dom";
 import { prepareTextForRender } from "../../utils/prepareTextContent";
+import { Status } from "masto";
 
 interface ParsedContentProps {
   html: string;
-  context: Entity.Status;
+  context: Status;
   onClick?: (event: React.MouseEvent) => void;
 }
 
