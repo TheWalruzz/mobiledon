@@ -3,8 +3,8 @@ import { Spoiler, Text, TypographyStylesProvider } from "@mantine/core";
 import { MediaGrid } from "../layout/MediaGrid";
 import { useTranslation } from "react-i18next";
 import { Poll } from "../layout/Poll";
-import { getApiClient } from "../../utils/getApiClient";
 import { ParsedContent } from "./ParsedContent";
+import { useAppContext } from "../../contexts/AppContext";
 
 interface TootContentProps {
   toot: Entity.Status;
@@ -19,15 +19,15 @@ export const TootContent: FC<TootContentProps> = ({
   onUpdate,
   readOnly = false,
 }) => {
+  const { apiClient } = useAppContext();
   const { t } = useTranslation();
 
   const onPollSubmit = useCallback(
     async (values: number[]) => {
-      const apiClient = await getApiClient();
       await apiClient.votePoll(toot.poll?.id!, values);
       onUpdate();
     },
-    [onUpdate, toot.poll?.id],
+    [apiClient, onUpdate, toot.poll?.id],
   );
 
   return (

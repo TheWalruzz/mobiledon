@@ -1,3 +1,4 @@
+import { Mastodon } from "megalodon";
 import React, {
   createContext,
   Dispatch,
@@ -25,6 +26,8 @@ export interface AppContextType {
   currentTimeline: TimelineType;
   setCurrentTimeline: Dispatch<React.SetStateAction<TimelineType>>;
   scrollAreaRef: React.MutableRefObject<HTMLDivElement | null>;
+  apiClient: Mastodon;
+  setApiClient: React.Dispatch<React.SetStateAction<Mastodon>>;
 }
 
 const AppContext = createContext<AppContextType>({} as any);
@@ -36,6 +39,7 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
     TimelineType.None,
   );
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+  const [apiClient, setApiClient] = useState<Mastodon>({} as any);
 
   const value = useMemo(
     () => ({
@@ -46,8 +50,10 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
       currentTimeline,
       setCurrentTimeline,
       scrollAreaRef,
+      apiClient,
+      setApiClient,
     }),
-    [currentTimeline, isNavbarOpen, user],
+    [apiClient, currentTimeline, isNavbarOpen, user],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -27,7 +27,7 @@ export const AppHeader = () => {
           "Showing hashtag timeline for",
         )} #${name}`,
         autoClose: 3000,
-        icon: false,
+        icon: <IconHash />,
       });
     }
   }, [currentTimeline, name, t]);

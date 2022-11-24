@@ -1,26 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ActionIcon, Footer, Group, Indicator } from "@mantine/core";
 import { IconBell, IconHome, IconMail, IconSearch } from "@tabler/icons";
-import { getApiClient } from "../../utils/getApiClient";
 import { useNavigate } from "react-router-dom";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Config } from "../../config";
 
 export const AppFooter = () => {
   const [notificationCount, setNotificationCount] = useState(0);
-  const { currentTimeline, scrollAreaRef } = useAppContext();
+  const { currentTimeline, scrollAreaRef, apiClient } = useAppContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      const apiClient = await getApiClient();
       const notifications = await apiClient.getNotifications({
         limit: Config.fetchLimit,
       });
 
       setNotificationCount(notifications.data.length);
     })();
-  }, []);
+  }, [apiClient]);
 
   const navigateToHome = useCallback(() => {
     if (currentTimeline === TimelineType.Home && scrollAreaRef.current) {

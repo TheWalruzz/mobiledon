@@ -1,24 +1,25 @@
 import React, { useCallback, useEffect } from "react";
-import { getApiClient } from "../../utils/getApiClient";
 import { Timeline } from "../layout/Timeline";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Config } from "../../config";
 
 export const LocalTimeline = () => {
-  const { setCurrentTimeline } = useAppContext();
+  const { setCurrentTimeline, apiClient } = useAppContext();
 
   useEffect(() => {
     setCurrentTimeline(TimelineType.Local);
   }, [setCurrentTimeline]);
 
-  const fetchData = useCallback(async (lastFetchedId?: string) => {
-    const apiClient = await getApiClient();
-    const response = await apiClient.getLocalTimeline({
-      limit: Config.fetchLimit,
-      max_id: lastFetchedId,
-    });
-    return response.data;
-  }, []);
+  const fetchData = useCallback(
+    async (lastFetchedId?: string) => {
+      const response = await apiClient.getLocalTimeline({
+        limit: Config.fetchLimit,
+        max_id: lastFetchedId,
+      });
+      return response.data;
+    },
+    [apiClient],
+  );
 
   return <Timeline fetchData={fetchData} />;
 };

@@ -26,7 +26,6 @@ import { suggestion } from "../editor/Suggestion";
 import { MediaUploadGrid } from "../layout/MediaUploadGrid";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import { ImageDetailsModalProps } from "./ImageDetailsModal";
-import { getApiClient } from "../../utils/getApiClient";
 import { useInputState, useListState } from "@mantine/hooks";
 import { LanguageMenu } from "../layout/LanguageMenu";
 import { PollInput } from "../layout/PollInput";
@@ -34,6 +33,7 @@ import {
   CustomModalProps,
   useCustomModal,
 } from "../../contexts/CustomModalContext";
+import { useAppContext } from "../../contexts/AppContext";
 
 export interface EditTootModalProps extends Record<string, unknown> {
   toot?: Entity.Status;
@@ -58,6 +58,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
   opened,
 }) => {
   const { t, i18n } = useTranslation();
+  const { apiClient } = useAppContext();
   const { openCustomModal } = useCustomModal();
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   const { fileInputRef, files, onFileInputChange, removeFile, updateFile } =
@@ -121,7 +122,6 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
   }, [editor, onClose, t]);
 
   const handleSubmit = useCallback(async () => {
-    const apiClient = await getApiClient();
     let mediaIds: string[] = [];
     if (files.length > 0) {
       mediaIds = (
@@ -164,6 +164,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
     pollExpiresIn,
     pollMultiple,
     onClose,
+    apiClient,
   ]);
 
   const handleImageDetails = useCallback(

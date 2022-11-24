@@ -16,7 +16,6 @@ import { IconArrowBigDownLines, IconPencil } from "@tabler/icons";
 import { Toot } from "../toot/Toot";
 import { useTranslation } from "react-i18next";
 import { useAppContext } from "../../contexts/AppContext";
-import { getApiClient } from "../../utils/getApiClient";
 import { Config } from "../../config";
 import { EditTootModalProps } from "../modals/EditTootModal";
 import { useCustomModal } from "../../contexts/CustomModalContext";
@@ -34,7 +33,7 @@ export const Timeline: FC<TimelineProps> = ({
 }) => {
   const { t } = useTranslation();
   const { openCustomModal } = useCustomModal();
-  const { scrollAreaRef } = useAppContext();
+  const { scrollAreaRef, apiClient } = useAppContext();
   // TODO: save loaded toots in global state for back functionality
   const [toots, setToots] = useState<Entity.Status[]>([]);
   const [loading, setLoading] = useState(false);
@@ -66,7 +65,6 @@ export const Timeline: FC<TimelineProps> = ({
 
   const onTootUpdate = useCallback(
     async (id: string) => {
-      const apiClient = await getApiClient();
       const updatedStatus = await apiClient.getStatus(id);
       const newToots = [...toots];
       const index = toots.findIndex((value) => value.id === id);
@@ -75,16 +73,15 @@ export const Timeline: FC<TimelineProps> = ({
         setToots(newToots);
       }
     },
-    [toots],
+    [apiClient, toots],
   );
 
   const onSubmit = useCallback(
     async (text: string, options: Record<string, any> = {}) => {
-      const apiClient = await getApiClient();
       await apiClient.postStatus(text, options);
       onRefresh();
     },
-    [onRefresh],
+    [apiClient, onRefresh],
   );
 
   const openEditTootModal = useCallback(() => {

@@ -3,13 +3,12 @@ import { Drawer, NavLink as Link, Divider } from "@mantine/core";
 import { useAppContext } from "../../contexts/AppContext";
 import { IconLogout, IconPencil, IconSettings } from "@tabler/icons";
 import { NavLink, useNavigate } from "react-router-dom";
-import { getApiClient } from "../../utils/getApiClient";
 import { Preferences } from "@capacitor/preferences";
 import { useTranslation } from "react-i18next";
 
 export const AppNavbar = () => {
   const { t } = useTranslation();
-  const { isNavbarOpen, setNavbarOpen } = useAppContext();
+  const { isNavbarOpen, setNavbarOpen, apiClient } = useAppContext();
   const navigate = useNavigate();
 
   const onClose = useCallback(() => setNavbarOpen(false), [setNavbarOpen]);
@@ -37,7 +36,6 @@ export const AppNavbar = () => {
   );
 
   const onLogout = useCallback(async () => {
-    const apiClient = await getApiClient();
     const { value: clientId } = await Preferences.get({ key: "clientId" });
     const { value: clientSecret } = await Preferences.get({
       key: "clientSecret",
@@ -49,8 +47,9 @@ export const AppNavbar = () => {
     await Preferences.remove({ key: "clientId" });
     await Preferences.remove({ key: "clientSecret" });
     await Preferences.remove({ key: "accessToken" });
+    await Preferences.remove({ key: "instanceUrl" });
     navigate("/");
-  }, [navigate]);
+  }, [apiClient, navigate]);
 
   return (
     <Drawer

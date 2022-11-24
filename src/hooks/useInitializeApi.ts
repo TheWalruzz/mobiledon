@@ -6,7 +6,7 @@ import { useAppContext } from "../contexts/AppContext";
 
 export const useInitializeApi = () => {
   const navigate = useNavigate();
-  const { setUser } = useAppContext();
+  const { setUser, setApiClient } = useAppContext();
   const [initialized, setInitialized] = useState(false);
   const hasRunOnce = useRef<boolean>(false);
 
@@ -25,6 +25,7 @@ export const useInitializeApi = () => {
           const apiClient = await getApiClient(true);
           const userResponse = await apiClient.verifyAccountCredentials();
           setUser(userResponse.data);
+          setApiClient(apiClient);
           setInitialized(true);
           return;
         }
@@ -32,9 +33,14 @@ export const useInitializeApi = () => {
         console.log("Access revoked, redirecting to login page...");
       }
 
+      await Preferences.remove({ key: "clientId" });
+      await Preferences.remove({ key: "clientSecret" });
+      await Preferences.remove({ key: "accessToken" });
+      await Preferences.remove({ key: "instanceUrl" });
+
       navigate("/login");
     })();
-  }, [navigate, setUser, initialized]);
+  }, [navigate, setUser, initialized, setApiClient]);
 
   return initialized;
 };

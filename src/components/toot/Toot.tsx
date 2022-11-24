@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Paper, Transition } from "@mantine/core";
 import { TootContent } from "./TootContent";
 import { TootHeader } from "./TootHeader";
 import { TootFooter } from "./TootFooter";
-import { useNavigate } from "react-router-dom";
-import { getApiClient } from "../../utils/getApiClient";
+import { useAppContext } from "../../contexts/AppContext";
 
 interface TootProps {
   toot: Entity.Status;
@@ -12,13 +12,13 @@ interface TootProps {
 }
 
 export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
+  const { apiClient } = useAppContext();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState(false);
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
 
   const onContentClick = useCallback(async () => {
     if (currentToot.in_reply_to_id) {
-      const apiClient = await getApiClient();
       const context = await apiClient.getStatusContext(
         currentToot.in_reply_to_id,
       );
@@ -32,7 +32,7 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
     }
 
     navigate(`/toot/${currentToot.id}`);
-  }, [navigate, currentToot]);
+  }, [currentToot.in_reply_to_id, currentToot.id, navigate, apiClient]);
 
   const handleUpdate = useCallback(() => {
     onUpdate(toot.id);

@@ -14,10 +14,10 @@ import {
   IconShare,
   IconStar,
 } from "@tabler/icons";
-import { getApiClient } from "../../utils/getApiClient";
 import { useTranslation } from "react-i18next";
 import { EditTootModalProps } from "../modals/EditTootModal";
 import { useCustomModal } from "../../contexts/CustomModalContext";
+import { useAppContext } from "../../contexts/AppContext";
 
 interface TootFooterProps {
   toot: Entity.Status;
@@ -28,6 +28,7 @@ const actionIconSize = 20;
 
 export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
   const { t } = useTranslation();
+  const { apiClient } = useAppContext();
   const { openCustomModal } = useCustomModal();
   const theme = useMantineTheme();
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
@@ -42,44 +43,40 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
 
   // TODO: refresh data after doing actions
   const boost = useCallback(async () => {
-    const apiClient = await getApiClient();
     if (currentToot.reblogged) {
       await apiClient.unreblogStatus(currentToot.id);
     } else {
       await apiClient.reblogStatus(currentToot.id);
     }
     onUpdate();
-  }, [currentToot.reblogged, currentToot.id, onUpdate]);
+  }, [currentToot.reblogged, currentToot.id, onUpdate, apiClient]);
 
   const favorite = useCallback(async () => {
-    const apiClient = await getApiClient();
     if (currentToot.favourited) {
       await apiClient.unfavouriteStatus(currentToot.id);
     } else {
       await apiClient.favouriteStatus(currentToot.id);
     }
     onUpdate();
-  }, [currentToot.favourited, currentToot.id, onUpdate]);
+  }, [apiClient, currentToot.favourited, currentToot.id, onUpdate]);
 
   const bookmark = useCallback(async () => {
-    const apiClient = await getApiClient();
     if (currentToot.bookmarked) {
       await apiClient.unbookmarkStatus(currentToot.id);
     } else {
       await apiClient.bookmarkStatus(currentToot.id);
     }
     onUpdate();
-  }, [currentToot.bookmarked, currentToot.id, onUpdate]);
+  }, [apiClient, currentToot.bookmarked, currentToot.id, onUpdate]);
 
   const onSubmit = useCallback(
     async (text: string, options?: Record<string, any>) => {
-      const apiClient = await getApiClient();
       await apiClient.postStatus(text, {
         in_reply_to_id: currentToot.id,
         ...options,
       });
     },
-    [currentToot.id],
+    [apiClient, currentToot.id],
   );
 
   const reply = useCallback(() => {
