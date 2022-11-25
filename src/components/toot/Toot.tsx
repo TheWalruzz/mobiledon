@@ -10,9 +10,10 @@ import { Status } from "masto";
 interface TootProps {
   toot: Status;
   onUpdate: (id: string) => void;
+  onRemove: (id: string) => void;
 }
 
-export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
+export const Toot: FC<TootProps> = ({ toot, onUpdate, onRemove }) => {
   const { apiClient } = useAppContext();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState(false);
@@ -38,6 +39,10 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
   const handleUpdate = useCallback(() => {
     onUpdate(toot.id);
   }, [onUpdate, toot.id]);
+
+  const handleRemove = useCallback(() => {
+    onRemove(toot.id);
+  }, [onRemove, toot.id]);
 
   useEffect(() => {
     setLoaded(true);
@@ -66,7 +71,11 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate }) => {
             onUpdate={handleUpdate}
             onContentClick={onContentClick}
           />
-          <TootFooter toot={toot} onUpdate={handleUpdate} />
+          <TootFooter
+            toot={toot}
+            onUpdate={handleUpdate}
+            onRemove={handleRemove}
+          />
         </Paper>
       )}
     </Transition>

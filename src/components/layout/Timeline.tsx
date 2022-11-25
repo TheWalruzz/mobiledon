@@ -80,6 +80,14 @@ export const Timeline: FC<TimelineProps> = ({
     [apiClient, toots],
   );
 
+  const onTootRemove = useCallback(
+    (id: string) => {
+      const newToots = [...toots].filter((toot) => toot.id !== id);
+      setToots(newToots);
+    },
+    [toots],
+  );
+
   const onSubmit = useCallback(
     async (text: string, options: Record<string, any> = {}) => {
       await apiClient.statuses.create({ status: text, ...options });
@@ -140,7 +148,11 @@ export const Timeline: FC<TimelineProps> = ({
                 key={toot.id}
                 root={scrollAreaRef?.current}
               >
-                <Toot toot={toot} onUpdate={onTootUpdate} />
+                <Toot
+                  toot={toot}
+                  onUpdate={onTootUpdate}
+                  onRemove={onTootRemove}
+                />
               </RenderIfVisible>
             ))}
             {lastItem}

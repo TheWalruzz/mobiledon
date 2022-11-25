@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useMemo } from "react";
+import React, { ReactNode, useCallback, useMemo } from "react";
 import { ActionIcon, Avatar, Button, Group, Header, Menu } from "@mantine/core";
 import {
   IconBrandMastodon,
@@ -7,30 +7,15 @@ import {
   IconUsers,
   IconWorld,
 } from "@tabler/icons";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
-import { showNotification } from "@mantine/notifications";
 
 export const AppHeader = () => {
   const { t } = useTranslation();
   const { setNavbarOpen, user, currentTimeline, scrollAreaRef } =
     useAppContext();
   const navigate = useNavigate();
-  const { name } = useParams();
-
-  useEffect(() => {
-    if (currentTimeline === TimelineType.Hashtag && name) {
-      showNotification({
-        message: `${t(
-          "nav.showingHashtagTimeline",
-          "Showing hashtag timeline for",
-        )} #${name}`,
-        autoClose: 3000,
-        icon: <IconHash />,
-      });
-    }
-  }, [currentTimeline, name, t]);
 
   const timelineTypes: Record<
     Exclude<TimelineType, TimelineType.None | TimelineType.Hashtag>,

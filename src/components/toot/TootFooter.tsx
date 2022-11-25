@@ -5,7 +5,9 @@ import {
   Group,
   Menu,
   useMantineTheme,
+  Text,
 } from "@mantine/core";
+import { openConfirmModal } from "@mantine/modals";
 import {
   IconBookmark,
   IconDots,
@@ -13,23 +15,30 @@ import {
   IconMessageDots,
   IconShare,
   IconStar,
+  IconTrash,
 } from "@tabler/icons";
 import { useTranslation } from "react-i18next";
 import { Status } from "masto";
 import { EditTootModalProps } from "../modals/EditTootModal";
 import { useCustomModal } from "../../contexts/CustomModalContext";
 import { useAppContext } from "../../contexts/AppContext";
+import { showNotification } from "@mantine/notifications";
 
 interface TootFooterProps {
   toot: Status;
   onUpdate: () => void;
+  onRemove: () => void;
 }
 
 const actionIconSize = 20;
 
-export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
+export const TootFooter: FC<TootFooterProps> = ({
+  toot,
+  onUpdate,
+  onRemove,
+}) => {
   const { t } = useTranslation();
-  const { apiClient } = useAppContext();
+  const { apiClient, user } = useAppContext();
   const { openCustomModal } = useCustomModal();
   const theme = useMantineTheme();
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
@@ -69,6 +78,35 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
     }
     onUpdate();
   }, [apiClient, currentToot.bookmarked, currentToot.id, onUpdate]);
+
+  const deleteToot = useCallback(() => {
+    openConfirmModal({
+      title: <Text fw={700}>{t("common.confirmTitle", "Are you sure?")}</Text>,
+      centered: true,
+      children: (
+        <Text size="sm">
+          {t(
+            "toot.deleteConfirm",
+            "If you continue, your toot will be lost forever.",
+          )}
+        </Text>
+      ),
+      labels: {
+        confirm: t("common.yes", "Yes"),
+        cancel: t("common.no", "No"),
+      },
+      onConfirm: async () => {
+        await apiClient.statuses.remove(toot.id);
+        onRemove();
+        showNotification({
+          message: t("toot.deletedMessage", "Toot was deleted."),
+          autoClose: 3000,
+          color: "red",
+        });
+      },
+      zIndex: 800,
+    });
+  }, [apiClient.statuses, onRemove, t, toot.id]);
 
   const onSubmit = useCallback(
     async (text: string, options?: Record<string, any>) => {
@@ -167,7 +205,11 @@ export const TootFooter: FC<TootFooterProps> = ({ toot, onUpdate }) => {
           </Menu.Target>
 
           <Menu.Dropdown>
-            <Menu.Item>WIP</Menu.Item>
+            {toot.account.id === user.id && (
+              <Menu.Item icon={<IconTrash />} onClick={deleteToot} color="red">
+                {t("toot.moreItems.delete", "Delete")}
+              </Menu.Item>
+            )}
           </Menu.Dropdown>
         </Menu>
       </Group>

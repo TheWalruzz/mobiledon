@@ -1,5 +1,8 @@
-import { WsEvents } from "masto";
 import React, { useCallback, useEffect, useState } from "react";
+import { showNotification } from "@mantine/notifications";
+import { IconHash } from "@tabler/icons";
+import { WsEvents } from "masto";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { Config } from "../../config";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
@@ -7,9 +10,23 @@ import { filterDefinedKeys } from "../../utils/filterObject";
 import { Timeline } from "../layout/Timeline";
 
 export const Hashtag = () => {
+  const { t } = useTranslation();
   const { setCurrentTimeline, apiClient } = useAppContext();
   const { name } = useParams();
   const [eventStream, setEventStream] = useState<WsEvents>();
+
+  useEffect(() => {
+    if (name) {
+      showNotification({
+        message: `${t(
+          "nav.showingHashtagTimeline",
+          "Showing hashtag timeline for",
+        )} #${name}`,
+        autoClose: 3000,
+        icon: <IconHash />,
+      });
+    }
+  }, [name, t]);
 
   useEffect(() => {
     setCurrentTimeline(TimelineType.Hashtag);
