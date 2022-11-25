@@ -111,7 +111,7 @@ export const Timeline: FC<TimelineProps> = ({
     <>
       <ScrollArea
         type="scroll"
-        style={{ height: "calc(100vh - 120px)", maxWidth: "100vw" }}
+        style={{ height: "100%", maxWidth: "100vw" }}
         p={0}
         scrollHideDelay={500}
         scrollbarSize={8}

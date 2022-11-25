@@ -18,7 +18,8 @@ import { NotificationsProvider } from "@mantine/notifications";
 export const App = () => {
   // TODO: extract this to context dependent on user's preferences
   const preferredColorScheme = useColorScheme();
-  const [colorScheme, setColorScheme] = usePreference<ColorScheme>("theme");
+  const [colorScheme, setColorScheme, themeLoaded] =
+    usePreference<ColorScheme>("theme");
   const toggleColorScheme = useCallback(
     (value?: ColorScheme) =>
       setColorScheme(value || (colorScheme === "dark" ? "light" : "dark")),
@@ -26,10 +27,10 @@ export const App = () => {
   );
 
   useEffect(() => {
-    if (!colorScheme) {
+    if (!colorScheme && themeLoaded) {
       setColorScheme(preferredColorScheme);
     }
-  }, [colorScheme, preferredColorScheme, setColorScheme]);
+  }, [colorScheme, preferredColorScheme, setColorScheme, themeLoaded]);
 
   return (
     <ColorSchemeProvider

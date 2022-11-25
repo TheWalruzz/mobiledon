@@ -5,6 +5,7 @@ import React, {
   FC,
   PropsWithChildren,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -35,7 +36,6 @@ export interface AppContextType {
   apiClient: MastoClient;
   setApiClient: React.Dispatch<React.SetStateAction<MastoClient>>;
   streams: Streams;
-  setStreams: React.Dispatch<Streams>;
 }
 
 const AppContext = createContext<AppContextType>({} as any);
@@ -50,6 +50,25 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [apiClient, setApiClient] = useState<MastoClient>(undefined as any);
   const [streams, setStreams] = useState<Streams>({} as any);
 
+  useEffect(() => {
+    if (apiClient) {
+      (async () => {
+        setStreams({
+          user: await apiClient.stream.streamUser(),
+          global: await apiClient.stream.streamPublicTimeline(),
+          local: await apiClient.stream.streamCommunityTimeline(),
+        });
+      })();
+    }
+
+    return () => {
+      Object.keys(streams).forEach((key) =>
+        streams[key as keyof Streams].disconnect(),
+      );
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiClient]);
+
   const value = useMemo(
     () => ({
       isNavbarOpen,
@@ -62,7 +81,6 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
       apiClient,
       setApiClient,
       streams,
-      setStreams,
     }),
     [apiClient, currentTimeline, isNavbarOpen, streams, user],
   );

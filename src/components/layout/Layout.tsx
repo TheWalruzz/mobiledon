@@ -10,7 +10,12 @@ export const Layout = () => {
   const initialized = useInitializeApi();
 
   return initialized ? (
-    <AppShell header={<AppHeader />} footer={<AppFooter />} padding={0}>
+    <AppShell
+      styles={{ main: { height: "calc(100vh - 120px)" } }}
+      header={<AppHeader />}
+      footer={<AppFooter />}
+      padding={0}
+    >
       <AppNavbar />
       <Outlet />
     </AppShell>

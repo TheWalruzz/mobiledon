@@ -1,21 +1,15 @@
-import { WsEvents } from "masto";
-import { useEffect, useRef } from "react";
-import { fromEvent, Subscription } from "rxjs";
+import { EventTypeMap, WsEvents } from "masto";
+import { useEffect } from "react";
 
-export const useWebSocketEvent = <T = any>(
+export const useWebSocketEvent = <T extends keyof EventTypeMap>(
   source: WsEvents | undefined,
-  eventName: string,
-  callback: (value: T) => void,
+  eventName: T,
+  callback: (...value: EventTypeMap[T]) => void,
 ) => {
-  const subscription = useRef<Subscription>();
-
   useEffect(() => {
-    if (source) {
-      subscription.current = fromEvent(source, eventName).subscribe(
-        callback as (value: unknown) => void,
-      );
-    }
-    return () => subscription.current?.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    source?.on(eventName, callback);
+    return () => {
+      source?.off(eventName, callback);
+    };
+  }, [callback, eventName, source]);
 };

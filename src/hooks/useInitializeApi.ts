@@ -6,7 +6,7 @@ import { useAppContext } from "../contexts/AppContext";
 
 export const useInitializeApi = () => {
   const navigate = useNavigate();
-  const { setUser, setApiClient, setStreams } = useAppContext();
+  const { setUser, setApiClient } = useAppContext();
   const [initialized, setInitialized] = useState(false);
   const hasRunOnce = useRef<boolean>(false);
 
@@ -26,11 +26,6 @@ export const useInitializeApi = () => {
           const userResponse = await apiClient.accounts.verifyCredentials();
           setUser(userResponse);
           setApiClient(apiClient);
-          setStreams({
-            user: await apiClient.stream.streamUser(),
-            global: await apiClient.stream.streamPublicTimeline(),
-            local: await apiClient.stream.streamCommunityTimeline(),
-          });
           setInitialized(true);
           return;
         }
@@ -45,7 +40,7 @@ export const useInitializeApi = () => {
 
       navigate("/login");
     })();
-  }, [navigate, setUser, initialized, setApiClient, setStreams]);
+  }, [navigate, setUser, initialized, setApiClient]);
 
   return initialized;
 };
