@@ -16,6 +16,7 @@
     "continue": "Kontynuuj"
   },
   "nav": {
+    "showingHashtagTimeline": "Oś czasu dla hashtaga",
     "homeTimeline": "Twoja oś czasu",
     "localTimeline": "Lokalna oś czasu",
     "globalTimeline": "Globalna oś czasu",
@@ -33,7 +34,7 @@
     "submitLabel": "Trąbnij!"
   },
   "poll": {
-    "totalVoters": "Suma głosów: {{votes}}",
+    "totalVotes": "Suma głosów: {{votes}}",
     "expiresShort": "Wygasa",
     "expirationTimes": {
       "5Minutes": "5 minut",

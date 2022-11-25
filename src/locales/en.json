@@ -16,6 +16,7 @@
     "continue": "Continue"
   },
   "nav": {
+    "showingHashtagTimeline": "Timeline for hashtag",
     "homeTimeline": "Your timeline",
     "localTimeline": "Local timeline",
     "globalTimeline": "Global timeline",
@@ -33,7 +34,7 @@
     "submitLabel": "Toot!"
   },
   "poll": {
-    "totalVoters": "Total votes: {{votes}}",
+    "totalVotes": "Total votes: {{votes}}",
     "expiresShort": "Expires",
     "expirationTimes": {
       "5Minutes": "5 Minutes",

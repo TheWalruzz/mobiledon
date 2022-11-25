@@ -91,7 +91,7 @@ export const Poll: FC<PollProps> = ({
               ))}
             </List>
             <Text c="dimmed">
-              {t("poll.totalVoters", "Total votes: {{votes}}", {
+              {t("poll.totalVotes", "Total votes: {{votes}}", {
                 votes: poll.votesCount,
               })}
             </Text>
