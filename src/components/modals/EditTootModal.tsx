@@ -62,6 +62,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
   const { apiClient } = useAppContext();
   const { openCustomModal } = useCustomModal();
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
+  // TODO: add existing files when editing
   const { fileInputRef, files, onFileInputChange, removeFile, updateFile } =
     useFileUpload();
   const [spoilerText, setSpoilerText] = useInputState<string | undefined>(

@@ -16,7 +16,6 @@
     "continue": "Continue"
   },
   "nav": {
-    "showingHashtagTimeline": "Timeline for hashtag",
     "homeTimeline": "Your timeline",
     "localTimeline": "Local timeline",
     "globalTimeline": "Global timeline",
@@ -24,7 +23,8 @@
     "avatar": "Your avatar",
     "editProfile": "Edit Profile",
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "showingHashtagTimeline": "Timeline for hashtag"
   },
   "editToot": {
     "removeFile": "Remove",
@@ -52,12 +52,16 @@
   },
   "toot": {
     "newToot": "New Toot",
+    "deleteConfirm": "If you continue, your toot will be lost forever.",
+    "deletedMessage": "Toot was deleted.",
     "reply": "Reply",
+    "edit": "Edit",
     "boost": "Boost",
     "favorite": "Add to favorites",
     "bookmark": "Add to bookmarks",
     "share": "Share",
     "more": "More",
+    "delete": "Delete",
     "boosted": "boosted"
   },
   "timeline": {

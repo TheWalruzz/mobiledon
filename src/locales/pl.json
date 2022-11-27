@@ -16,7 +16,6 @@
     "continue": "Kontynuuj"
   },
   "nav": {
-    "showingHashtagTimeline": "Oś czasu dla hashtaga",
     "homeTimeline": "Twoja oś czasu",
     "localTimeline": "Lokalna oś czasu",
     "globalTimeline": "Globalna oś czasu",
@@ -24,7 +23,8 @@
     "avatar": "Twój avatar",
     "editProfile": "Edytuj profil",
     "settings": "Ustawienia",
-    "logout": "Wyloguj"
+    "logout": "Wyloguj",
+    "showingHashtagTimeline": "Oś czasu dla hashtaga"
   },
   "editToot": {
     "removeFile": "Usuń",
@@ -52,12 +52,16 @@
   },
   "toot": {
     "newToot": "Nowy toot",
+    "deleteConfirm": "If you continue, your toot will be lost forever.",
+    "deletedMessage": "Toot was deleted.",
     "reply": "Odpowiedz",
+    "edit": "Edit",
     "boost": "Podbij",
     "favorite": "Dodaj do ulubionych",
     "bookmark": "Dodaj do zakładek",
     "share": "Udostępnij",
     "more": "Więcej",
+    "delete": "Delete",
     "boosted": "podbił/a"
   },
   "timeline": {

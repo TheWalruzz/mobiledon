@@ -13,3 +13,10 @@ export const prepareTextForRender = (text: string, emojis: Emoji[]) => {
 
   return sanitize(newText);
 };
+
+export const clearContent = (text: string) => {
+  return sanitize(text.replaceAll("</p>", "</p>\n"), {
+    ALLOWED_TAGS: [],
+    KEEP_CONTENT: true,
+  });
+};

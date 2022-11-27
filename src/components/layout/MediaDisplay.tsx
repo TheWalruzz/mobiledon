@@ -1,26 +1,34 @@
-import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 import { FocusedImage } from "image-focus";
 import { Attachment } from "masto";
 import { blurHashToDataURL } from "../../utils/blurhashToDataUrl";
 import { downloadFile } from "../../utils/downloadFile";
+import { useLazyMedia } from "../../hooks/useLazyMedia";
 
 interface MediaDisplayProps {
   attachment: Attachment;
   showBlur: boolean;
   onClick: (attachment: Attachment) => void;
-  fullHeight?: boolean;
+  fullWidth?: boolean;
 }
 
 export const MediaDisplay: FC<MediaDisplayProps> = ({
   attachment,
   showBlur,
-  fullHeight,
+  fullWidth,
   onClick,
 }) => {
-  const imageRef = useRef<HTMLImageElement | null>(null);
   const blurredImage = useMemo(
     () => blurHashToDataURL(attachment.blurhash!),
     [attachment.blurhash],
+  );
+  const {
+    ref,
+    src: mediaSrc,
+    loaded,
+  } = useLazyMedia<HTMLImageElement | HTMLVideoElement>(
+    attachment.remoteUrl || attachment.previewUrl || attachment.url!,
+    blurredImage,
   );
 
   const handleClick = useCallback(() => {
@@ -33,51 +41,40 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
 
   useEffect(() => {
     let focusedImage: FocusedImage;
-    if (imageRef.current !== null) {
-      focusedImage = new FocusedImage(imageRef.current, {
-        focus: (attachment.meta as any)?.focus,
+    if (ref.current !== null && ref.current?.parentElement) {
+      focusedImage = new FocusedImage(ref.current as any, {
+        focus: {
+          x: (attachment?.meta as any)?.focus?.x ?? 0,
+          y: (attachment?.meta as any)?.focus?.y ?? 0,
+        },
       });
     }
 
     return () => focusedImage?.stopListening();
-  }, [attachment.meta, showBlur]);
+  }, [attachment?.meta, loaded, ref, showBlur]);
 
   const mediaElement = useMemo(() => {
     switch (attachment.type as any) {
-      // TODO: add gif/video preview and fix their layouts
+      // TODO: add gif/video preview
+      // TODO: fix blur size for videos
+      // TODO: figure something better to not use useLazyMedia for video tag
       case "gifv":
       case "video":
-        if (showBlur) {
-          return (
-            <img
-              ref={imageRef}
-              src={blurredImage}
-              alt={attachment.description ?? ""}
-            />
-          );
-        }
-
-        if (attachment.type === "gifv") {
-          return (
-            <video
-              ref={imageRef as any}
-              loop
-              autoPlay
-              src={attachment.url!}
-              preload="metadata"
-            />
-          );
-        } else {
-          return (
-            <video
-              width="100%"
-              loop
-              src={attachment.url!}
-              controls
-              preload="metadata"
-            />
-          );
-        }
+        return (
+          <video
+            ref={attachment.type === "gifv" ? (ref as any) : null}
+            style={{
+              width: "100%",
+              aspectRatio: attachment.meta?.small?.aspect,
+            }}
+            loop={attachment.type === "gifv"}
+            autoPlay={attachment.type === "gifv"}
+            src={attachment.remoteUrl!}
+            controls={attachment.type === "video"}
+            poster={showBlur ? blurredImage : undefined}
+            preload="metadata"
+          />
+        );
       case "audio":
         return (
           <audio style={{ width: "100%" }} src={attachment.url!} controls />
@@ -86,12 +83,11 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
       default:
         return (
           <img
-            ref={imageRef}
-            loading="eager"
+            ref={ref as any}
             src={
               showBlur || attachment.type === "unknown"
                 ? blurredImage
-                : attachment.previewUrl!
+                : mediaSrc
             }
             alt={attachment.description ?? ""}
             onClick={handleClick}
@@ -100,23 +96,26 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
     }
   }, [
     attachment.description,
-    attachment.previewUrl,
+    attachment.meta?.small?.aspect,
+    attachment.remoteUrl,
     attachment.type,
     attachment.url,
     blurredImage,
     handleClick,
+    mediaSrc,
+    ref,
     showBlur,
   ]);
 
   return (
     <div
       style={{
-        height: fullHeight ? "100%" : undefined,
+        height: "100%",
         paddingTop: ["video", "audio"].includes(attachment.type)
           ? 0
-          : fullHeight
-          ? "100%"
-          : "56.25%",
+          : fullWidth && (attachment.meta?.original?.aspect ?? 1) > 1
+          ? `calc(100% / ${attachment.meta?.original?.aspect})`
+          : "100%",
         borderRadius: 8,
       }}
     >

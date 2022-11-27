@@ -1,10 +1,14 @@
 import { decode } from "blurhash";
 
-export function blurHashToDataURL(hash: string | undefined): string {
+export function blurHashToDataURL(
+  hash: string | undefined,
+  width: number = 32,
+  height: number = 32,
+): string {
   if (!hash) return "";
 
-  const pixels = decode(hash, 32, 32);
-  const dataURL = parsePixels(pixels, 32, 32);
+  const pixels = decode(hash, width, height);
+  const dataURL = parsePixels(pixels, width, height);
   return dataURL;
 }
 

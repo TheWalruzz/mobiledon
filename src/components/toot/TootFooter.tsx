@@ -13,6 +13,7 @@ import {
   IconDots,
   IconExchange,
   IconMessageDots,
+  IconPencil,
   IconShare,
   IconStar,
   IconTrash,
@@ -42,6 +43,11 @@ export const TootFooter: FC<TootFooterProps> = ({
   const { openCustomModal } = useCustomModal();
   const theme = useMantineTheme();
   const currentToot = useMemo(() => toot.reblog ?? toot, [toot]);
+
+  const isOwner = useMemo(
+    () => currentToot.account.id === user.id,
+    [currentToot.account.id, user.id],
+  );
 
   const share = useCallback(
     () =>
@@ -129,6 +135,29 @@ export const TootFooter: FC<TootFooterProps> = ({
     });
   }, [currentToot, onSubmit, openCustomModal, t]);
 
+  const editToot = useCallback(() => {
+    openCustomModal<EditTootModalProps>("editToot", {
+      title: t("toot.edit", "Edit"),
+      initialValue: currentToot.content,
+      initialVisibility: currentToot.visibility,
+      onSubmit: async (text, options) => {
+        await apiClient.statuses.update(currentToot.id, {
+          status: text,
+          ...options,
+        });
+        onUpdate();
+      },
+    });
+  }, [
+    apiClient.statuses,
+    currentToot.content,
+    currentToot.id,
+    currentToot.visibility,
+    onUpdate,
+    openCustomModal,
+    t,
+  ]);
+
   return (
     <>
       <Group position="apart" mt="xs">
@@ -205,9 +234,14 @@ export const TootFooter: FC<TootFooterProps> = ({
           </Menu.Target>
 
           <Menu.Dropdown>
-            {toot.account.id === user.id && (
+            {isOwner && (
+              <Menu.Item icon={<IconPencil />} onClick={editToot}>
+                {t("toot.edit", "Edit")}
+              </Menu.Item>
+            )}
+            {isOwner && (
               <Menu.Item icon={<IconTrash />} onClick={deleteToot} color="red">
-                {t("toot.moreItems.delete", "Delete")}
+                {t("toot.delete", "Delete")}
               </Menu.Item>
             )}
           </Menu.Dropdown>

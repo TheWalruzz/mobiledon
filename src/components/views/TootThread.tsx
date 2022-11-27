@@ -1,12 +1,13 @@
 import { Space, Stack } from "@mantine/core";
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Timeline } from "../layout/Timeline";
 import { Toot } from "../toot/Toot";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Status } from "masto";
 
 export const TootThread = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [root, setRoot] = useState<Status>();
 
@@ -35,6 +36,13 @@ export const TootThread = () => {
     }
   }, [apiClient, id]);
 
+  const onTootRemove = useCallback(
+    (id: string) => {
+      navigate("/");
+    },
+    [navigate],
+  );
+
   useEffect(() => {
     getRoot();
   }, [getRoot]);
@@ -44,7 +52,9 @@ export const TootThread = () => {
       {root && (
         <Timeline
           fetchData={fetchData}
-          firstItem={<Toot toot={root} onUpdate={getRoot} />}
+          firstItem={
+            <Toot toot={root} onUpdate={getRoot} onRemove={onTootRemove} />
+          }
           lastItem={<Space h="xl" my="xl" />}
         />
       )}
