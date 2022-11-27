@@ -4,7 +4,7 @@ export const useLazyMedia = <T extends Element = HTMLImageElement>(
   src: string,
   placeholderSrc: string,
 ) => {
-  const elementRef = useRef<T>();
+  const elementRef = useRef<T>(null);
   const [loaded, setLoaded] = useState(false);
   const currentSrc = useMemo(
     () => (loaded ? src : placeholderSrc),
