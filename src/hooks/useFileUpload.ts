@@ -1,47 +1,63 @@
+import { ChangeEvent, useCallback, useMemo, useRef, useState } from "react";
 import { useListState } from "@mantine/hooks";
-import { ChangeEvent, useCallback, useMemo, useRef } from "react";
+import { useAppContext } from "../contexts/AppContext";
+import { Attachment } from "masto";
 
-export interface FileDetails {
-  file: File;
-  description?: string;
-  focus?: { x: number; y: number };
-}
-
-export const useFileUpload = () => {
+export const useFileUpload = (initialValue: Attachment[] = []) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [files, handlers] = useListState<FileDetails>([]);
+  const { apiClient } = useAppContext();
+  const [files, handlers] = useListState<Attachment>(initialValue);
+  const [processing, setProcessing] = useState(false);
 
   const onFileInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    async (e: ChangeEvent<HTMLInputElement>) => {
       if (e.currentTarget?.files) {
+        setProcessing(true);
         const filesArr = Array.from(e.currentTarget.files).map((file) => ({
           file,
           description: "",
         }));
-        handlers.append(...filesArr);
+        const newFiles = await Promise.all(
+          filesArr.map(({ file, description }) =>
+            apiClient.mediaAttachments.create({
+              file,
+              description,
+            }),
+          ),
+        );
+        handlers.append(...newFiles);
         if (fileInputRef.current) {
           (fileInputRef.current.value as any) = null;
         }
+        setProcessing(false);
       }
     },
-    [handlers],
+    [apiClient.mediaAttachments, handlers],
   );
 
   const removeFile = useCallback(
-    (index: number) => {
+    async (index: number) => {
       handlers.remove(index);
     },
     [handlers],
   );
 
   const updateFile = useCallback(
-    (index: number, file: FileDetails) => {
-      handlers.setItem(index, file);
+    async (index: number, { id, ...file }: Attachment) => {
+      setProcessing(true);
+      const updatedFile = await apiClient.mediaAttachments.update(id, {
+        description: file.description,
+        focus: file.meta?.focus
+          ? `${file.meta.focus.x ?? 0},${file.meta.focus.y ?? 0}`
+          : undefined,
+      });
+      handlers.setItem(index, updatedFile);
+      setProcessing(false);
     },
-    [handlers],
+    [apiClient.mediaAttachments, handlers],
   );
 
-  const removeAllFiles = useCallback(() => {
+  const removeAllFiles = useCallback(async () => {
     handlers.setState([]);
   }, [handlers]);
 
@@ -53,7 +69,15 @@ export const useFileUpload = () => {
       removeFile,
       updateFile,
       removeAllFiles,
+      processing,
     }),
-    [files, onFileInputChange, removeAllFiles, removeFile, updateFile],
+    [
+      files,
+      onFileInputChange,
+      processing,
+      removeAllFiles,
+      removeFile,
+      updateFile,
+    ],
   );
 };

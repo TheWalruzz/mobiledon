@@ -140,6 +140,7 @@ export const TootFooter: FC<TootFooterProps> = ({
       title: t("toot.edit", "Edit"),
       initialValue: currentToot.content,
       initialVisibility: currentToot.visibility,
+      initialFiles: currentToot.mediaAttachments,
       onSubmit: async (text, options) => {
         await apiClient.statuses.update(currentToot.id, {
           status: text,
@@ -152,6 +153,7 @@ export const TootFooter: FC<TootFooterProps> = ({
     apiClient.statuses,
     currentToot.content,
     currentToot.id,
+    currentToot.mediaAttachments,
     currentToot.visibility,
     onUpdate,
     openCustomModal,

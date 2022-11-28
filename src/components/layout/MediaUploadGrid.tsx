@@ -1,42 +1,19 @@
-import React, { FC, useMemo } from "react";
-import {
-  SimpleGrid,
-  Image,
-  Button,
-  Paper,
-  Center,
-  Text,
-  ActionIcon,
-} from "@mantine/core";
+import React, { FC } from "react";
+import { SimpleGrid, Image, Button, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { FileDetails } from "../../hooks/useFileUpload";
 import { IconPencil } from "@tabler/icons";
+import { Attachment } from "masto";
 
 interface FileDisplayProps {
-  file: File;
+  file: Attachment;
   onClick: () => void;
 }
 
 const FileDisplay = ({ file, onClick }: FileDisplayProps) => {
-  const isImage = useMemo(
-    () =>
-      ["image/png", "image/jpeg", "image/webp", "image/gif"].includes(
-        file.type,
-      ),
-    [file],
-  );
-  const imageUrl = useMemo(
-    () => (isImage ? URL.createObjectURL(file) : ""),
-    [file, isImage],
-  );
-
-  return isImage ? (
+  return (
     <div style={{ position: "relative" }}>
-      <Image
-        src={imageUrl}
-        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
-      />
-      {file.type !== "image/gif" && (
+      <Image src={file.previewUrl} />
+      {file.type === "image" && (
         <ActionIcon
           onClick={onClick}
           style={{
@@ -51,19 +28,13 @@ const FileDisplay = ({ file, onClick }: FileDisplayProps) => {
         </ActionIcon>
       )}
     </div>
-  ) : (
-    <Paper style={{ width: "100%", height: 200 }}>
-      <Center style={{ width: "100%", height: "100%" }}>
-        <Text>{file.name}</Text>
-      </Center>
-    </Paper>
   );
 };
 
 interface MediaUploadGridProps {
-  files: FileDetails[];
+  files: Attachment[];
   onRemove: (index: number) => void;
-  onClick: (index: number, fileDetails: FileDetails) => void;
+  onClick: (index: number, file: Attachment) => void;
 }
 
 export const MediaUploadGrid: FC<MediaUploadGridProps> = ({
@@ -76,8 +47,8 @@ export const MediaUploadGrid: FC<MediaUploadGridProps> = ({
   return (
     <SimpleGrid cols={4} mb={files.length > 0 ? "xs" : 0}>
       {files.map((file, index) => (
-        <div key={`${index}--${file.file.name}`}>
-          <FileDisplay file={file.file} onClick={() => onClick(index, file)} />
+        <div key={`${index}--${file.id}`}>
+          <FileDisplay file={file} onClick={() => onClick(index, file)} />
           <Button
             compact
             color="default"

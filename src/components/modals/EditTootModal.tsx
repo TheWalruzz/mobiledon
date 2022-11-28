@@ -5,6 +5,7 @@ import {
   Button,
   Flex,
   Group,
+  LoadingOverlay,
   Menu,
   Modal,
   Paper,
@@ -19,7 +20,7 @@ import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import Mention from "@tiptap/extension-mention";
 import { IconAlertTriangle, IconList, IconPaperclip } from "@tabler/icons";
-import { Status } from "masto";
+import { Attachment, Status } from "masto";
 import { TootHeader } from "../toot/TootHeader";
 import { TootContent } from "../toot/TootContent";
 import { Visibility, VisibilityIcon } from "../utils/VisibilityIcon";
@@ -34,12 +35,12 @@ import {
   CustomModalProps,
   useCustomModal,
 } from "../../contexts/CustomModalContext";
-import { useAppContext } from "../../contexts/AppContext";
 
 export interface EditTootModalProps extends Record<string, unknown> {
   toot?: Status;
   initialValue?: string;
   initialVisibility?: Visibility;
+  initialFiles?: Attachment[];
   onSubmit: (text: string, options?: Record<string, any>) => void;
   onClose: () => void;
   title: string;
@@ -52,6 +53,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
     toot,
     initialValue = "",
     initialVisibility = "public",
+    initialFiles,
     onSubmit,
     title,
   },
@@ -59,12 +61,16 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
   opened,
 }) => {
   const { t, i18n } = useTranslation();
-  const { apiClient } = useAppContext();
   const { openCustomModal } = useCustomModal();
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
-  // TODO: add existing files when editing
-  const { fileInputRef, files, onFileInputChange, removeFile, updateFile } =
-    useFileUpload();
+  const {
+    fileInputRef,
+    files,
+    onFileInputChange,
+    removeFile,
+    updateFile,
+    processing,
+  } = useFileUpload(initialFiles);
   const [spoilerText, setSpoilerText] = useInputState<string | undefined>(
     undefined,
   );
@@ -124,20 +130,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
   }, [editor, onClose, t]);
 
   const handleSubmit = useCallback(async () => {
-    let mediaIds: string[] = [];
-    if (files.length > 0) {
-      mediaIds = (
-        await Promise.all(
-          files.map(({ file, description, focus }) =>
-            apiClient.mediaAttachments.create({
-              file,
-              description,
-              focus: focus ? `${focus.x},${focus.y}` : undefined,
-            }),
-          ),
-        )
-      ).map((result) => result.id);
-    }
+    const mediaIds = files.map((result) => result.id);
 
     onSubmit(editor?.getText() ?? "", {
       visibility,
@@ -167,7 +160,6 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
     pollExpiresIn,
     pollMultiple,
     onClose,
-    apiClient,
   ]);
 
   const handleImageDetails = useCallback(
@@ -192,6 +184,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
       onClose={onClose}
       title={<Text fw={700}>{title}</Text>}
     >
+      <LoadingOverlay visible={processing} />
       {toot && (
         <Paper p="xs" mb="sm" withBorder>
           <TootHeader toot={toot} hideDate hideReblog />

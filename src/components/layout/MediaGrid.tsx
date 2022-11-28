@@ -113,7 +113,7 @@ export const MediaGrid: FC<MediaGridProps> = ({ items, sensitive }) => {
                 showBlur={showSensitiveFilter}
                 onClick={onItemClick}
               />
-              {items.length > 3 && (
+              {items.length > 4 && (
                 <div
                   style={{
                     position: "absolute",
@@ -131,7 +131,7 @@ export const MediaGrid: FC<MediaGridProps> = ({ items, sensitive }) => {
                   onClick={onMoreClick}
                 >
                   <Text color="white" fz="lg">
-                    +{items.length - 2}
+                    +{items.length - 3}
                   </Text>
                 </div>
               )}

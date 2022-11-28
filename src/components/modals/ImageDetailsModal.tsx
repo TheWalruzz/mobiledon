@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import {
   Button,
   Flex,
@@ -17,13 +10,13 @@ import {
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useInputState } from "@mantine/hooks";
-import { FileDetails } from "../../hooks/useFileUpload";
 import { FocusPicker } from "image-focus";
+import { Attachment } from "masto";
 import { CustomModalProps } from "../../contexts/CustomModalContext";
 
 export interface ImageDetailsModalProps extends Record<string, unknown> {
-  fileDetails: FileDetails | null;
-  onSubmit: (fileDetails: FileDetails) => void;
+  fileDetails: Attachment | null;
+  onSubmit: (file: Attachment) => void;
 }
 
 export const ImageDetailsModal: FC<
@@ -34,20 +27,21 @@ export const ImageDetailsModal: FC<
   const [description, setDescription] = useInputState(
     fileDetails?.description || "",
   );
-  const [focus, setFocus] = useState(fileDetails?.focus || { x: 0, y: 0 });
+  const [focus, setFocus] = useState(
+    fileDetails?.meta?.focus || { x: 0, y: 0 },
+  );
   const [ready, setReady] = useState(false);
 
-  const imageUrl = useMemo(
-    () => (fileDetails ? URL.createObjectURL(fileDetails.file) : ""),
-    [fileDetails],
-  );
-
+  // TODO: for some reason you cannot update your sent media... fix that
   const handleSubmit = useCallback(async () => {
     if (fileDetails) {
       onSubmit({
-        file: fileDetails?.file,
+        ...fileDetails,
+        meta: {
+          ...fileDetails.meta,
+          focus,
+        },
         description,
-        focus,
       });
       onClose();
     }
@@ -93,14 +87,9 @@ export const ImageDetailsModal: FC<
       </Text>
       <Image
         imageRef={imageRef}
-        src={imageUrl}
-        imageProps={{
-          onLoad: () => {
-            URL.revokeObjectURL(imageUrl);
-            setReady(true);
-          },
-        }}
+        src={fileDetails?.url}
         mb="xs"
+        imageProps={{ onLoad: () => setReady(true) }}
       />
       <Textarea
         mb="xs"
