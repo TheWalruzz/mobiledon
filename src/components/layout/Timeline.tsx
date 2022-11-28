@@ -125,7 +125,7 @@ export const Timeline: FC<TimelineProps> = ({
         scrollbarSize={8}
         viewportRef={scrollAreaRef}
       >
-        <LoadingOverlay visible={loading && toots.length === 0} />
+        <LoadingOverlay visible={loading && toots.length === 0 && !firstItem} />
         <PullToRefresh
           onRefresh={onRefresh}
           pullingContent={

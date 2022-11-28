@@ -4,6 +4,10 @@ import { App } from "./App";
 import { AppContextProvider } from "./contexts/AppContext";
 import "./i18n";
 
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/captions.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );

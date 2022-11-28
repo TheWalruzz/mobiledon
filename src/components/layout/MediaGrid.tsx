@@ -1,8 +1,12 @@
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { Button, Grid, Text } from "@mantine/core";
-import { MediaDisplay } from "./MediaDisplay";
-import ImageViewer from "react-simple-image-viewer";
 import { Attachment } from "masto";
+import Lightbox from "yet-another-react-lightbox";
+import Video from "yet-another-react-lightbox/plugins/video";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import Captions from "yet-another-react-lightbox/plugins/captions";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import { MediaDisplay } from "./MediaDisplay";
 
 interface MediaGridProps {
   items: Attachment[];
@@ -11,10 +15,36 @@ interface MediaGridProps {
 
 export const MediaGrid: FC<MediaGridProps> = ({ items, sensitive }) => {
   const [showSensitiveFilter, setShowSensitiveFilter] = useState(sensitive);
-  const [currentImage, setCurrentImage] = useState(0);
-  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const viewerImages = useMemo(() => items.map((item) => item.url!), [items]);
+  const slides = useMemo(
+    () =>
+      items.map((item) => {
+        const typeSpecific = ["video", "gifv"].includes(item.type)
+          ? {
+              sources: [{ src: item.url, type: "video/mp4" }],
+              controls: true,
+            }
+          : { src: item.url };
+        return {
+          // TODO: make it work with audio?
+          type: ["video", "gifv"].includes(item.type) ? "video" : "image",
+          alt: item.description,
+          description: item.description,
+          width: item.meta?.original?.width,
+          height: item.meta?.original?.height,
+          url: item.url,
+          ...typeSpecific,
+        };
+      }),
+    [items],
+  );
+
+  const renderNavigation = useMemo(
+    () => (slides.length <= 1 ? () => null : undefined),
+    [slides.length],
+  );
 
   const onSensitiveToggle = useCallback(() => {
     setShowSensitiveFilter((old) => !old);
@@ -22,24 +52,22 @@ export const MediaGrid: FC<MediaGridProps> = ({ items, sensitive }) => {
 
   const onItemClick = useCallback(
     (item: Attachment) => {
-      const index = viewerImages.findIndex((image) => image === item.url);
-      setCurrentImage(index);
-      setIsViewerOpen(true);
+      const index = slides.findIndex((image) => image.url === item.url);
+      setCurrentImageIndex(index);
+      setLightboxOpen(true);
     },
-    [viewerImages],
+    [slides],
   );
 
   const onMoreClick = useCallback(() => {
-    setCurrentImage(2);
-    setIsViewerOpen(true);
+    setCurrentImageIndex(3);
+    setLightboxOpen(true);
   }, []);
 
   const onCloseViewer = useCallback(() => {
-    setCurrentImage(0);
-    setIsViewerOpen(false);
+    setCurrentImageIndex(0);
+    setLightboxOpen(false);
   }, []);
-
-  // TODO: add lightbox
 
   return (
     <>
@@ -111,16 +139,17 @@ export const MediaGrid: FC<MediaGridProps> = ({ items, sensitive }) => {
           </Grid.Col>
         )}
       </Grid>
-      {isViewerOpen && (
-        <ImageViewer
-          src={viewerImages}
-          currentIndex={currentImage}
-          disableScroll
-          closeOnClickOutside
-          onClose={onCloseViewer}
-          backgroundStyle={{
-            zIndex: 201,
-            backgroundColor: "rgba(0,0,0,0.9)",
+      {lightboxOpen && (
+        <Lightbox
+          open
+          close={onCloseViewer}
+          plugins={[Video, Zoom, Captions, Thumbnails]}
+          index={currentImageIndex}
+          slides={slides as any}
+          controller={{ closeOnBackdropClick: true }}
+          render={{
+            buttonPrev: renderNavigation,
+            buttonNext: renderNavigation,
           }}
         />
       )}

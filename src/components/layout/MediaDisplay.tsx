@@ -8,10 +8,10 @@ import { useLazyMedia } from "../../hooks/useLazyMedia";
 interface DisplayProps {
   attachment: Attachment;
   showBlur: boolean;
-  onClick?: () => void;
+  onClick: () => void;
 }
 
-const VideoDisplay: FC<DisplayProps> = ({ attachment, showBlur }) => {
+const VideoDisplay: FC<DisplayProps> = ({ attachment, showBlur, onClick }) => {
   const blurredImage = useMemo(
     () =>
       blurHashToDataURL(
@@ -34,13 +34,14 @@ const VideoDisplay: FC<DisplayProps> = ({ attachment, showBlur }) => {
         left: 0,
         width: "100%",
         height: "100%",
+        borderRadius: 8,
       }}
       loop={attachment.type === "gifv"}
       autoPlay={attachment.type === "gifv"}
       src={attachment.url! || attachment.remoteUrl!}
-      controls={attachment.type === "video"}
       poster={showBlur ? blurredImage : undefined}
       preload="metadata"
+      onClick={onClick}
     />
   );
 };
@@ -50,11 +51,7 @@ const ImageDisplay: FC<DisplayProps> = ({ attachment, showBlur, onClick }) => {
     () => blurHashToDataURL(attachment.blurhash!),
     [attachment.blurhash],
   );
-  const {
-    ref,
-    src: mediaSrc,
-    loaded,
-  } = useLazyMedia<HTMLImageElement>(
+  const { ref, src: mediaSrc } = useLazyMedia<HTMLImageElement>(
     attachment.previewUrl || attachment.url!,
     blurredImage,
   );
@@ -71,7 +68,7 @@ const ImageDisplay: FC<DisplayProps> = ({ attachment, showBlur, onClick }) => {
     }
 
     return () => focusedImage?.stopListening();
-  }, [attachment?.meta, loaded, ref, showBlur]);
+  }, [attachment?.meta, ref, showBlur]);
 
   return (
     <img
@@ -79,6 +76,7 @@ const ImageDisplay: FC<DisplayProps> = ({ attachment, showBlur, onClick }) => {
       src={showBlur || attachment.type === "unknown" ? blurredImage : mediaSrc}
       alt={attachment.description ?? ""}
       onClick={onClick}
+      style={{ borderRadius: 8 }}
     />
   );
 };
@@ -138,8 +136,8 @@ export const MediaDisplay: FC<MediaDisplayProps> = ({
         height: "100%",
         paddingTop: ["audio"].includes(attachment.type)
           ? 0
-          : fullWidth && (attachment.meta?.original?.aspect ?? 1) > 1
-          ? `calc(100% / ${attachment.meta?.original?.aspect})`
+          : fullWidth && (attachment.meta?.small?.aspect ?? 1) > 1
+          ? `calc(100% / ${attachment.meta?.small?.aspect})`
           : "100%",
         borderRadius: 8,
         position: "relative",
