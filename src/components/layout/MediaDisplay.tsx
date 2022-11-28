@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { FocusedImage } from "image-focus";
 import { Attachment } from "masto";
 import { blurHashToDataURL } from "../../utils/blurhashToDataUrl";
@@ -12,6 +12,7 @@ interface DisplayProps {
 }
 
 const VideoDisplay: FC<DisplayProps> = ({ attachment, showBlur, onClick }) => {
+  const ref = useRef<HTMLVideoElement>(null);
   const blurredImage = useMemo(
     () =>
       blurHashToDataURL(
@@ -26,8 +27,15 @@ const VideoDisplay: FC<DisplayProps> = ({ attachment, showBlur, onClick }) => {
     ],
   );
 
+  useEffect(() => {
+    if (!showBlur && attachment.type === "gifv" && ref.current) {
+      ref.current.play();
+    }
+  }, [attachment.type, showBlur]);
+
   return (
     <video
+      ref={ref}
       style={{
         position: "absolute",
         top: 0,
@@ -37,7 +45,6 @@ const VideoDisplay: FC<DisplayProps> = ({ attachment, showBlur, onClick }) => {
         borderRadius: 8,
       }}
       loop={attachment.type === "gifv"}
-      autoPlay={attachment.type === "gifv"}
       src={attachment.url! || attachment.remoteUrl!}
       poster={showBlur ? blurredImage : undefined}
       preload="metadata"
