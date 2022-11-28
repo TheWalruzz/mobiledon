@@ -32,7 +32,6 @@ export const ImageDetailsModal: FC<
   );
   const [ready, setReady] = useState(false);
 
-  // TODO: for some reason you cannot update your sent media... fix that
   const handleSubmit = useCallback(async () => {
     if (fileDetails) {
       onSubmit({

@@ -302,6 +302,7 @@ export const EditTootModal: FC<CustomModalProps<EditTootModalProps>> = ({
         files={files}
         onRemove={removeFile}
         onClick={handleImageDetails}
+        canEdit={!initialFiles}
       />
       {files.length > 0 && (
         <Switch
