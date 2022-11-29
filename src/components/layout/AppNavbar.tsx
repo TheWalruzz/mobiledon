@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from "react";
-import { Drawer, NavLink as Link, Divider } from "@mantine/core";
+import { Drawer, NavLink as Link, Divider, Avatar } from "@mantine/core";
 import { useAppContext } from "../../contexts/AppContext";
-import { IconLogout, IconPencil, IconSettings } from "@tabler/icons";
+import { IconLogout, IconSettings } from "@tabler/icons";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Preferences } from "@capacitor/preferences";
 import { useTranslation } from "react-i18next";
 
 export const AppNavbar = () => {
   const { t } = useTranslation();
-  const { isNavbarOpen, setNavbarOpen } = useAppContext();
+  const { isNavbarOpen, setNavbarOpen, user } = useAppContext();
   const navigate = useNavigate();
 
   const onClose = useCallback(() => setNavbarOpen(false), [setNavbarOpen]);
@@ -16,12 +16,12 @@ export const AppNavbar = () => {
   const topLinks = useMemo(
     () => [
       {
-        label: t("nav.editProfile", "Edit Profile"),
-        icon: <IconPencil />,
-        to: "/",
+        label: t("nav.viewProfile", "View Profile"),
+        icon: <Avatar src={user.avatar} size="sm" />,
+        to: `/user/${user.acct}`,
       },
     ],
-    [t],
+    [t, user.acct, user.avatar],
   );
 
   const bottomLinks = useMemo(
@@ -82,11 +82,21 @@ export const AppNavbar = () => {
       padding="xs"
     >
       {topLinks.map((item, i) => (
-        <Link key={`topLinks-${i}`} component={NavLink} {...item} />
+        <Link
+          key={`topLinks-${i}`}
+          component={NavLink}
+          onClick={onClose}
+          {...item}
+        />
       ))}
       <Divider my="xs" />
       {bottomLinks.map((item, i) => (
-        <Link key={`bottomLinks-${i}`} component={NavLink} {...item} />
+        <Link
+          key={`bottomLinks-${i}`}
+          component={NavLink}
+          onClick={onClose}
+          {...item}
+        />
       ))}
       <Link
         label={t("nav.logout", "Logout")}

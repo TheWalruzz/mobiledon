@@ -51,6 +51,7 @@ export const AppFooter = () => {
           offset={5}
           withBorder
           inline
+          zIndex={99}
           styles={{ indicator: { padding: 0 } }}
         >
           <ActionIcon>

@@ -21,7 +21,7 @@
     "globalTimeline": "Global timeline",
     "sidebar": "Sidebar",
     "avatar": "Your avatar",
-    "editProfile": "Edit Profile",
+    "viewProfile": "View Profile",
     "settings": "Settings",
     "logout": "Logout",
     "showingHashtagTimeline": "Timeline for hashtag"
@@ -81,5 +81,13 @@
   },
   "login": {
     "instanceUrl": "Instance URL"
+  },
+  "account": {
+    "stopFollow": "Stop Following",
+    "follow": "Follow",
+    "followedBy": "This user is following you",
+    "toots": "Toots",
+    "followers": "Followers",
+    "following": "Following"
   }
 }

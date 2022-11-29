@@ -2,11 +2,12 @@ import React, { FC, MouseEvent, useCallback, useMemo } from "react";
 import parse, { DOMNode, domToReact, Element } from "html-react-parser";
 import { Link } from "react-router-dom";
 import { prepareTextForRender } from "../../utils/prepareTextContent";
-import { Status } from "masto";
+import { Emoji } from "masto";
+import { Box, BoxProps } from "@mantine/core";
 
-interface ParsedContentProps {
+interface ParsedContentProps extends BoxProps {
   html: string;
-  context: Status;
+  context: { emojis: Emoji[] };
   onClick?: (event: React.MouseEvent) => void;
 }
 
@@ -14,6 +15,7 @@ export const ParsedContent: FC<ParsedContentProps> = ({
   html,
   context,
   onClick,
+  ...props
 }) => {
   const stopPropagationFix = useCallback((event: MouseEvent) => {
     event.stopPropagation();
@@ -59,5 +61,9 @@ export const ParsedContent: FC<ParsedContentProps> = ({
     [context.emojis, html, stopPropagationFix],
   );
 
-  return <div onClick={onClick}>{content}</div>;
+  return (
+    <Box {...props} onClick={onClick}>
+      {content}
+    </Box>
+  );
 };

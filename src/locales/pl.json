@@ -21,7 +21,7 @@
     "globalTimeline": "Globalna oś czasu",
     "sidebar": "Panel boczny",
     "avatar": "Twój avatar",
-    "editProfile": "Edytuj profil",
+    "viewProfile": "Zobacz profil",
     "settings": "Ustawienia",
     "logout": "Wyloguj",
     "showingHashtagTimeline": "Oś czasu dla hashtaga"
@@ -81,5 +81,13 @@
   },
   "login": {
     "instanceUrl": "URL instancji"
+  },
+  "account": {
+    "stopFollow": "Przestań śledzić",
+    "follow": "Śledź",
+    "followedBy": "Ten użytkownik cię śledzi",
+    "toots": "Tooty",
+    "followers": "Śledzący",
+    "following": "Śledzi"
   }
 }

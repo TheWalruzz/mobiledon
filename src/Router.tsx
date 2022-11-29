@@ -20,7 +20,7 @@ export const Router = () => {
         <Route path="local" element={<LocalTimeline />} />
         <Route path="global" element={<GlobalTimeline />} />
         <Route path="toot/:id" element={<TootThread />} />
-        <Route path="user/:id" element={<User />} />
+        <Route path="user/:acct" element={<User />} />
         <Route path="tag/:name" element={<Hashtag />} />
         {/* TODO: add 404 page */}
       </Route>
