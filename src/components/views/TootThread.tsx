@@ -1,7 +1,7 @@
-import { Space, Stack } from "@mantine/core";
 import React, { useCallback, useEffect, useState } from "react";
+import { Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
-import { Timeline } from "../layout/Timeline";
+import { StatusTimeline } from "../layout/StatusTimeline";
 import { Toot } from "../toot/Toot";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Status } from "masto";
@@ -50,12 +50,11 @@ export const TootThread = () => {
   return (
     <Stack spacing={0}>
       {root && (
-        <Timeline
+        <StatusTimeline
           fetchData={fetchData}
           firstItem={
             <Toot toot={root} onUpdate={getRoot} onRemove={onTootRemove} />
           }
-          lastItem={<Space h="xl" my="xl" />}
         />
       )}
     </Stack>

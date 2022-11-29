@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { Timeline } from "../layout/Timeline";
+import { StatusTimeline } from "../layout/StatusTimeline";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Config } from "../../config";
 import { filterDefinedKeys } from "../../utils/filterObject";
@@ -24,5 +24,5 @@ export const GlobalTimeline = () => {
     [apiClient],
   );
 
-  return <Timeline fetchData={fetchData} eventStream={streams.global} />;
+  return <StatusTimeline fetchData={fetchData} eventStream={streams.global} />;
 };

@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { Config } from "../../config";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { filterDefinedKeys } from "../../utils/filterObject";
-import { Timeline } from "../layout/Timeline";
+import { StatusTimeline } from "../layout/StatusTimeline";
 
 export const Hashtag = () => {
   const { t } = useTranslation();
@@ -57,6 +57,6 @@ export const Hashtag = () => {
   }, [apiClient, name]);
 
   return eventStream ? (
-    <Timeline fetchData={fetchData} eventStream={eventStream} />
+    <StatusTimeline fetchData={fetchData} eventStream={eventStream} />
   ) : null;
 };

@@ -10,6 +10,7 @@
     "show": "Show",
     "cancel": "Cancel",
     "save": "Save",
+    "loading": "Loading...",
     "errors": {
       "invalidUrl": "Invalid URL"
     },
@@ -25,6 +26,21 @@
     "settings": "Settings",
     "logout": "Logout",
     "showingHashtagTimeline": "Timeline for hashtag"
+  },
+  "toot": {
+    "postSuccessful": "Tooted successfully!",
+    "newToot": "New Toot",
+    "deleteConfirm": "If you continue, your toot will be lost forever.",
+    "deletedMessage": "Toot was deleted.",
+    "reply": "Reply",
+    "edit": "Edit",
+    "boost": "Boost",
+    "favorite": "Add to favorites",
+    "bookmark": "Add to bookmarks",
+    "share": "Share",
+    "more": "More",
+    "delete": "Delete",
+    "boosted": "boosted"
   },
   "editToot": {
     "removeFile": "Remove",
@@ -50,23 +66,6 @@
     "expiresIn": "Expires in",
     "allowMultiple": "Allow multiple answers"
   },
-  "toot": {
-    "newToot": "New Toot",
-    "deleteConfirm": "If you continue, your toot will be lost forever.",
-    "deletedMessage": "Toot was deleted.",
-    "reply": "Reply",
-    "edit": "Edit",
-    "boost": "Boost",
-    "favorite": "Add to favorites",
-    "bookmark": "Add to bookmarks",
-    "share": "Share",
-    "more": "More",
-    "delete": "Delete",
-    "boosted": "boosted"
-  },
-  "timeline": {
-    "pullToRefresh": "Pull down to refresh"
-  },
   "visibility": {
     "public": "Public",
     "unlisted": "Unlisted",
@@ -79,6 +78,9 @@
     "description": "Image description",
     "descriptionPlaceholder": "Provide a text description of the image for the visually impaired."
   },
+  "timeline": {
+    "pullToRefresh": "Pull down to refresh"
+  },
   "login": {
     "instanceUrl": "Instance URL"
   },
@@ -86,6 +88,13 @@
     "stopFollow": "Stop Following",
     "follow": "Follow",
     "followedBy": "This user is following you",
+    "tootCount_one": "{{count}} toot",
+    "tootCount_other": "{{count}} toots",
+    "followingCount_one": "{{count}} following",
+    "followingCount_other": "{{count}} following",
+    "followersCount_one": "{{count}} followers",
+    "followersCount_other": "{{count}} followers",
+    "fields": "Fields",
     "toots": "Toots",
     "followers": "Followers",
     "following": "Following"

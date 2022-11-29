@@ -13,7 +13,6 @@ import {
   Menu,
   Paper,
   ScrollArea,
-  Space,
   Stack,
   Table,
   Tabs,
@@ -24,11 +23,12 @@ import { useTranslation } from "react-i18next";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { filterDefinedKeys } from "../../utils/filterObject";
 import { Config } from "../../config";
-import { Timeline } from "../layout/Timeline";
+import { StatusTimeline } from "../layout/StatusTimeline";
 import { IconCircleCheck, IconDotsVertical } from "@tabler/icons";
 import { InnerHTML } from "../utils/InnerHTML";
 import { getDisplayName } from "../../utils/getDisplayName";
 import { ParsedContent } from "../toot/ParsedContent";
+import { UserList } from "../layout/UserList";
 
 export const User = () => {
   const { t } = useTranslation();
@@ -51,6 +51,10 @@ export const User = () => {
     },
     [apiClient.accounts],
   );
+
+  // const fetchFollowing = useCallback(async () => {
+  //   const result = await apiClient.accounts.fetchFollowing()
+  // }, []);
 
   const fetchUser = useCallback(async () => {
     if (acct) {
@@ -90,6 +94,38 @@ export const User = () => {
       fetchRelationship(user.id);
     }
   }, [apiClient.accounts, fetchRelationship, relationship?.following, user]);
+
+  const fetchFollowing = useCallback(
+    async (lastFetchedId?: string) => {
+      if (user && !lastFetchedId) {
+        const response = await apiClient.accounts.fetchFollowing(
+          user.id,
+          filterDefinedKeys({
+            limit: Config.fetchLimit,
+          }),
+        );
+        return response.value;
+      }
+      return [];
+    },
+    [apiClient.accounts, user],
+  );
+
+  const fetchFollowers = useCallback(
+    async (lastFetchedId?: string) => {
+      if (user && !lastFetchedId) {
+        const response = await apiClient.accounts.fetchFollowers(
+          user.id,
+          filterDefinedKeys({
+            limit: Config.fetchLimit,
+          }),
+        );
+        return response.value;
+      }
+      return [];
+    },
+    [apiClient.accounts, user],
+  );
 
   useEffect(() => {
     fetchUser();
@@ -163,6 +199,23 @@ export const User = () => {
                   </Text>
                 )}
                 <ParsedContent html={user.note ?? ""} context={user} mt="xs" />
+                <Group>
+                  <Text color="dimmed">
+                    {t("account.tootCount", "Toots count: {{count}}", {
+                      count: user.statusesCount,
+                    })}
+                  </Text>
+                  <Text color="dimmed">
+                    {t("account.followersCount", "Followers: {{count}}", {
+                      count: user.followersCount,
+                    })}
+                  </Text>
+                  <Text color="dimmed">
+                    {t("account.followingCount", "Following: {{count}}", {
+                      count: user.followingCount,
+                    })}
+                  </Text>
+                </Group>
               </Stack>
             </TypographyStylesProvider>
           )}
@@ -170,12 +223,13 @@ export const User = () => {
       </Paper>
       {!loading && (
         <Tabs
-          defaultValue={user?.fields?.length ? "fields" : "toots"}
+          defaultValue={!!user?.fields?.length ? "fields" : "toots"}
           style={{ height: "50%" }}
+          keepMounted={false}
         >
           <Tabs.List>
             {/* TODO: add pinned toots */}
-            {user?.fields?.length && (
+            {!!user?.fields?.length && (
               <Tabs.Tab value="fields">
                 {t("account.fields", "Fields")}
               </Tabs.Tab>
@@ -189,7 +243,7 @@ export const User = () => {
             </Tabs.Tab>
           </Tabs.List>
 
-          {user?.fields?.length && (
+          {!!user?.fields?.length && (
             <Tabs.Panel value="fields" h="calc(100% - 36px)">
               <ScrollArea h="100%">
                 <Table width="100%" withColumnBorders withBorder>
@@ -218,20 +272,15 @@ export const User = () => {
           )}
 
           <Tabs.Panel value="toots" h="calc(100% - 36px)">
-            {user && (
-              <Timeline
-                fetchData={fetchToots}
-                lastItem={<Space h="xl" my="xl" />}
-              />
-            )}
+            {user && <StatusTimeline fetchData={fetchToots} />}
           </Tabs.Panel>
 
-          <Tabs.Panel value="followers">
-            <div />
+          <Tabs.Panel value="followers" h="calc(100% - 36px)">
+            {user && <UserList fetchData={fetchFollowers} />}
           </Tabs.Panel>
 
-          <Tabs.Panel value="following">
-            <div />
+          <Tabs.Panel value="following" h="calc(100% - 36px)">
+            {user && <UserList fetchData={fetchFollowing} />}
           </Tabs.Panel>
         </Tabs>
       )}

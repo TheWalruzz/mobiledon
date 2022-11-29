@@ -9,7 +9,7 @@ import { Status } from "masto";
 
 interface TootProps {
   toot: Status;
-  onUpdate: (id: string) => void;
+  onUpdate: (id: string, updatedItem: Status) => void;
   onRemove: (id: string) => void;
 }
 
@@ -36,9 +36,10 @@ export const Toot: FC<TootProps> = ({ toot, onUpdate, onRemove }) => {
     navigate(`/toot/${currentToot.id}`);
   }, [currentToot.inReplyToId, currentToot.id, navigate, apiClient]);
 
-  const handleUpdate = useCallback(() => {
-    onUpdate(toot.id);
-  }, [onUpdate, toot.id]);
+  const handleUpdate = useCallback(async () => {
+    const updatedItem = await apiClient.statuses.fetch(toot.id);
+    onUpdate(toot.id, updatedItem);
+  }, [apiClient.statuses, onUpdate, toot.id]);
 
   const handleRemove = useCallback(() => {
     onRemove(toot.id);

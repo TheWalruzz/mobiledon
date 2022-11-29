@@ -10,6 +10,7 @@
     "show": "Pokaż",
     "cancel": "Anuluj",
     "save": "Zapisz",
+    "loading": "Ładowanie...",
     "errors": {
       "invalidUrl": "Nieprawidłowy URL"
     },
@@ -25,6 +26,21 @@
     "settings": "Ustawienia",
     "logout": "Wyloguj",
     "showingHashtagTimeline": "Oś czasu dla hashtaga"
+  },
+  "toot": {
+    "postSuccessful": "Zatrąbienie się powiodło!",
+    "newToot": "Nowy toot",
+    "deleteConfirm": "Jeśli kontynuujesz, twój toot zniknie na zawsze.",
+    "deletedMessage": "Toot usunięty.",
+    "reply": "Odpowiedz",
+    "edit": "Edytuj",
+    "boost": "Podbij",
+    "favorite": "Dodaj do ulubionych",
+    "bookmark": "Dodaj do zakładek",
+    "share": "Udostępnij",
+    "more": "Więcej",
+    "delete": "Delete",
+    "boosted": "podbił/a"
   },
   "editToot": {
     "removeFile": "Usuń",
@@ -50,23 +66,6 @@
     "expiresIn": "Wygasa za",
     "allowMultiple": "Zezwól na wielokrotny wybór"
   },
-  "toot": {
-    "newToot": "Nowy toot",
-    "deleteConfirm": "If you continue, your toot will be lost forever.",
-    "deletedMessage": "Toot was deleted.",
-    "reply": "Odpowiedz",
-    "edit": "Edit",
-    "boost": "Podbij",
-    "favorite": "Dodaj do ulubionych",
-    "bookmark": "Dodaj do zakładek",
-    "share": "Udostępnij",
-    "more": "Więcej",
-    "delete": "Delete",
-    "boosted": "podbił/a"
-  },
-  "timeline": {
-    "pullToRefresh": "Przeciągnij, aby odświeżyć"
-  },
   "visibility": {
     "public": "Publiczny",
     "unlisted": "Niepubliczny",
@@ -79,6 +78,9 @@
     "description": "Opis obrazu",
     "descriptionPlaceholder": "Podaj opis obrazu dla osób z zaburzeniami wzroku."
   },
+  "timeline": {
+    "pullToRefresh": "Przeciągnij, aby odświeżyć"
+  },
   "login": {
     "instanceUrl": "URL instancji"
   },
@@ -86,8 +88,21 @@
     "stopFollow": "Przestań śledzić",
     "follow": "Śledź",
     "followedBy": "Ten użytkownik cię śledzi",
+    "tootCount_one": "{{count}} toot",
+    "tootCount_few": "{{count}} tooty",
+    "tootCount_many": "{{count}} tootów",
+    "tootCount_other": "{{count}} tootów",
+    "followingCount_one": "{{count}} śledzony",
+    "followingCount_few": "{{count}} śledzonych",
+    "followingCount_many": "{{count}} śledzonych",
+    "followingCount_other": "{{count}} śledzonych",
+    "followersCount_one": "{{count}} śledzący",
+    "followersCount_few": "{{count}} śledzących",
+    "followersCount_many": "{{count}} śledzących",
+    "followersCount_other": "{{count}} śledzących",
+    "fields": "Pola",
     "toots": "Tooty",
     "followers": "Śledzący",
-    "following": "Śledzi"
+    "following": "Śledzeni"
   }
 }
