@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
-import { StatusTimeline } from "../layout/StatusTimeline";
+import { TootTimeline } from "../toot/TootTimeline";
 import { Toot } from "../toot/Toot";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Status } from "masto";
@@ -50,7 +50,7 @@ export const TootThread = () => {
   return (
     <Stack spacing={0}>
       {root && (
-        <StatusTimeline
+        <TootTimeline
           fetchData={fetchData}
           firstItem={
             <Toot toot={root} onUpdate={getRoot} onRemove={onTootRemove} />

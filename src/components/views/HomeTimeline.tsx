@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { StatusTimeline } from "../layout/StatusTimeline";
+import { TootTimeline } from "../toot/TootTimeline";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { Config } from "../../config";
 import { filterDefinedKeys } from "../../utils/filterObject";
@@ -23,5 +23,5 @@ export const HomeTimeline = () => {
     [apiClient],
   );
 
-  return <StatusTimeline fetchData={fetchData} eventStream={streams.user} />;
+  return <TootTimeline fetchData={fetchData} eventStream={streams.user} />;
 };

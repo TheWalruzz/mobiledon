@@ -1,16 +1,16 @@
 import React, { FC, ReactNode, useCallback, useMemo } from "react";
 import { Status, WsEvents } from "masto";
-import { Toot } from "../toot/Toot";
+import { Toot } from "./Toot";
 import { AsyncList } from "../utils/AsyncList";
 import { useWebSocketEvent } from "../../hooks/useWebSocketEvent";
 
-interface StatusTimelineProps {
+interface TootTimelineProps {
   fetchData: (lastFetchedId?: string) => Promise<Status[]>;
   firstItem?: ReactNode;
   eventStream?: WsEvents;
 }
 
-export const StatusTimeline: FC<StatusTimelineProps> = ({
+export const TootTimeline: FC<TootTimelineProps> = ({
   fetchData,
   firstItem,
   eventStream,
@@ -29,6 +29,15 @@ export const StatusTimeline: FC<StatusTimelineProps> = ({
     [eventStream],
   );
 
+  const tootItem = useCallback(
+    (
+      item: Status,
+      onUpdate: (id: string, updatedItem: Status) => void,
+      onRemove: (id: string) => void,
+    ) => <Toot toot={item} onUpdate={onUpdate} onRemove={onRemove} />,
+    [],
+  );
+
   return (
     <AsyncList<Status>
       fetchData={fetchData}
@@ -36,9 +45,7 @@ export const StatusTimeline: FC<StatusTimelineProps> = ({
       firstItem={firstItem}
       useStreamHandler={useStream}
     >
-      {(item, onUpdate, onRemove) => (
-        <Toot toot={item} onUpdate={onUpdate} onRemove={onRemove} />
-      )}
+      {tootItem}
     </AsyncList>
   );
 };

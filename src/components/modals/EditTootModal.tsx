@@ -25,12 +25,12 @@ import { TootHeader } from "../toot/TootHeader";
 import { TootContent } from "../toot/TootContent";
 import { Visibility, VisibilityIcon } from "../utils/VisibilityIcon";
 import { suggestion } from "../editor/Suggestion";
-import { MediaUploadGrid } from "../layout/MediaUploadGrid";
+import { MediaUploadGrid } from "./EditTootModal/MediaUploadGrid";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import { ImageDetailsModalProps } from "./ImageDetailsModal";
 import { useInputState, useListState } from "@mantine/hooks";
-import { LanguageMenu } from "../layout/LanguageMenu";
-import { PollInput } from "../layout/PollInput";
+import { LanguageMenu } from "./EditTootModal/LanguageMenu";
+import { PollInput } from "../toot/PollInput";
 import {
   CustomModalProps,
   useCustomModal,

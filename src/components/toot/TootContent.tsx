@@ -1,9 +1,9 @@
 import React, { FC, useCallback } from "react";
 import { Spoiler, Text, TypographyStylesProvider } from "@mantine/core";
-import { MediaGrid } from "../layout/MediaGrid";
+import { MediaGrid } from "./MediaGrid";
 import { useTranslation } from "react-i18next";
-import { Poll } from "../layout/Poll";
-import { ParsedContent } from "./ParsedContent";
+import { Poll } from "./Poll";
+import { ParsedContent } from "../utils/ParsedContent";
 import { useAppContext } from "../../contexts/AppContext";
 import { Status } from "masto";
 

@@ -13,6 +13,7 @@ import {
   Menu,
   Paper,
   ScrollArea,
+  Space,
   Stack,
   Table,
   Tabs,
@@ -23,12 +24,12 @@ import { useTranslation } from "react-i18next";
 import { TimelineType, useAppContext } from "../../contexts/AppContext";
 import { filterDefinedKeys } from "../../utils/filterObject";
 import { Config } from "../../config";
-import { StatusTimeline } from "../layout/StatusTimeline";
+import { TootTimeline } from "../toot/TootTimeline";
 import { IconCircleCheck, IconDotsVertical } from "@tabler/icons";
 import { InnerHTML } from "../utils/InnerHTML";
 import { getDisplayName } from "../../utils/getDisplayName";
-import { ParsedContent } from "../toot/ParsedContent";
-import { UserList } from "../layout/UserList";
+import { ParsedContent } from "../utils/ParsedContent";
+import { UserList } from "../user/UserList";
 
 export const User = () => {
   const { t } = useTranslation();
@@ -98,12 +99,7 @@ export const User = () => {
   const fetchFollowing = useCallback(
     async (lastFetchedId?: string) => {
       if (user && !lastFetchedId) {
-        const response = await apiClient.accounts.fetchFollowing(
-          user.id,
-          filterDefinedKeys({
-            limit: Config.fetchLimit,
-          }),
-        );
+        const response = await apiClient.accounts.fetchFollowing(user.id);
         return response.value;
       }
       return [];
@@ -114,12 +110,7 @@ export const User = () => {
   const fetchFollowers = useCallback(
     async (lastFetchedId?: string) => {
       if (user && !lastFetchedId) {
-        const response = await apiClient.accounts.fetchFollowers(
-          user.id,
-          filterDefinedKeys({
-            limit: Config.fetchLimit,
-          }),
-        );
+        const response = await apiClient.accounts.fetchFollowers(user.id);
         return response.value;
       }
       return [];
@@ -193,12 +184,22 @@ export const User = () => {
                 <Text c="dimmed" opacity={0.8} lineClamp={1} fz="sm">
                   @{user.acct}
                 </Text>
-                {user.id !== currentUser.id && relationship?.followedBy && (
+                {user.id !== currentUser.id && relationship?.followedBy ? (
                   <Text size="sm" color="dimmed">
                     {t("account.followedBy", "This user is following you")}
                   </Text>
+                ) : (
+                  <Space my="xs" />
                 )}
-                <ParsedContent html={user.note ?? ""} context={user} mt="xs" />
+                <Paper withBorder my="xs" pl="xs" pr={0}>
+                  <ScrollArea pr="xs" h={125} scrollbarSize={8} type="auto">
+                    <ParsedContent
+                      html={user.note ?? ""}
+                      context={user}
+                      mt="xs"
+                    />
+                  </ScrollArea>
+                </Paper>
                 <Group>
                   <Text color="dimmed">
                     {t("account.tootCount", "Toots count: {{count}}", {
@@ -272,7 +273,7 @@ export const User = () => {
           )}
 
           <Tabs.Panel value="toots" h="calc(100% - 36px)">
-            {user && <StatusTimeline fetchData={fetchToots} />}
+            {user && <TootTimeline fetchData={fetchToots} />}
           </Tabs.Panel>
 
           <Tabs.Panel value="followers" h="calc(100% - 36px)">

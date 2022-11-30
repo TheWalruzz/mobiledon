@@ -222,32 +222,30 @@ export const TootFooter: FC<TootFooterProps> = ({
           <IconShare size={actionIconSize} />
         </ActionIcon>
 
-        <Menu>
-          <Menu.Target>
-            <ActionIcon
-              p={2}
-              title={t("toot.more", "More")}
-              c="dimmed"
-              color="gray"
-              variant="subtle"
-            >
-              <IconDots size={actionIconSize} />
-            </ActionIcon>
-          </Menu.Target>
+        {isOwner && (
+          <Menu>
+            <Menu.Target>
+              <ActionIcon
+                p={2}
+                title={t("toot.more", "More")}
+                c="dimmed"
+                color="gray"
+                variant="subtle"
+              >
+                <IconDots size={actionIconSize} />
+              </ActionIcon>
+            </Menu.Target>
 
-          <Menu.Dropdown>
-            {isOwner && (
+            <Menu.Dropdown>
               <Menu.Item icon={<IconPencil />} onClick={editToot}>
                 {t("toot.edit", "Edit")}
               </Menu.Item>
-            )}
-            {isOwner && (
               <Menu.Item icon={<IconTrash />} onClick={deleteToot} color="red">
                 {t("toot.delete", "Delete")}
               </Menu.Item>
-            )}
-          </Menu.Dropdown>
-        </Menu>
+            </Menu.Dropdown>
+          </Menu>
+        )}
       </Group>
     </>
   );
