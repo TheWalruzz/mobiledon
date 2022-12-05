@@ -7,7 +7,7 @@ import codes from "iso-language-codes";
 const languageCodes = codes
   .map((lang) => ({
     id: lang.iso639_1,
-    value: lang.nativeName,
+    value: `${lang.nativeName} (${lang.name})`,
   }))
   .sort((a, b) => a.id.localeCompare(b.id));
 
